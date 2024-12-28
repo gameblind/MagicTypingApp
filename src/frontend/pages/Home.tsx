@@ -1,157 +1,173 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Button,
-  Card,
-  CardContent,
   Container,
-  Grid,
   Typography,
-  useTheme,
+  Paper,
+  Button,
+  Grid,
 } from '@mui/material';
 import {
   Keyboard as KeyboardIcon,
   EmojiEvents as TrophyIcon,
-  Timeline as TimelineIcon,
-  School as SchoolIcon,
+  Timeline as ProgressIcon,
+  School as AcademyIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const features = [
     {
-      title: '趣味练习',
-      description: '通过哈利波特魔法世界场景，让打字练习变得有趣',
-      icon: <KeyboardIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.primary.main,
+      title: "趣味练习",
+      description: "通过哈利波特魔法世界场景，让打字练习变得有趣",
+      icon: <KeyboardIcon sx={{ fontSize: 40, color: '#9c27b0' }} />,
+      color: 'rgba(156, 39, 176, 0.1)',
+      path: '/practice'
     },
     {
-      title: '成就系统',
-      description: '完成任务获得成就，解锁新的魔法咒语和角色',
-      icon: <TrophyIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.secondary.main,
+      title: "成就系统",
+      description: "完成任务获得成就，解锁新的魔法咒语和角色",
+      icon: <TrophyIcon sx={{ fontSize: 40, color: '#ffc107' }} />,
+      color: 'rgba(255, 193, 7, 0.1)',
+      path: '/achievements'
     },
     {
-      title: '进度追踪',
-      description: '实时记录练习数据，直观展示进步轨迹',
-      icon: <TimelineIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.success.main,
+      title: "进度追踪",
+      description: "实时记录练习数据，直观展示进步轨迹",
+      icon: <ProgressIcon sx={{ fontSize: 40, color: '#4caf50' }} />,
+      color: 'rgba(76, 175, 80, 0.1)',
+      path: '/statistics'
     },
     {
-      title: '魔法学院',
-      description: '从新手魔法师到魔法大师的进阶之路',
-      icon: <SchoolIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.error.main,
-    },
+      title: "魔法学院",
+      description: "从新手魔法师到魔法大师的进阶之路",
+      icon: <AcademyIcon sx={{ fontSize: 40, color: '#f44336' }} />,
+      color: 'rgba(244, 67, 54, 0.1)',
+      path: '/profile'
+    }
   ];
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 8 }}>
-        <Typography
-          variant="h2"
-          align="center"
-          sx={{
-            mb: 2,
-            fontWeight: 'bold',
-            color: theme.palette.primary.main,
-          }}
-        >
-          欢迎来到哈利波特打字冒险
-        </Typography>
-        <Typography
-          variant="h5"
-          align="center"
-          color="textSecondary"
-          sx={{ mb: 6 }}
-        >
-          在魔法世界中提升你的打字技能
-        </Typography>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/src/assets/images/hogwarts-bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        pt: 8,
+        pb: 6,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Typography
+            component="h1"
+            variant="h2"
+            sx={{
+              color: '#9c27b0',
+              fontFamily: '"Harry Potter", fantasy',
+              textShadow: '0 0 20px rgba(156, 39, 176, 0.5)',
+              mb: 2,
+            }}
+          >
+            欢迎来到哈利波特打字冒险
+          </Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.9)',
+              mb: 4,
+              fontWeight: 300,
+            }}
+          >
+            在魔法世界中提升你的打字技能
+          </Typography>
+        </Box>
 
         <Grid container spacing={4} justifyContent="center">
           {features.map((feature) => (
             <Grid item xs={12} sm={6} md={3} key={feature.title}>
-              <Card
+              <Paper
+                elevation={3}
                 sx={{
+                  p: 3,
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
-                  transition: 'transform 0.2s',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  transition: 'transform 0.3s ease-in-out',
+                  cursor: 'pointer',
                   '&:hover': {
                     transform: 'translateY(-8px)',
                   },
                 }}
+                onClick={() => navigate(feature.path)}
               >
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      mb: 2,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        p: 2,
-                        borderRadius: '50%',
-                        backgroundColor: `${feature.color}20`,
-                        color: feature.color,
-                      }}
-                    >
-                      {feature.icon}
-                    </Box>
-                  </Box>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                    align="center"
-                  >
-                    {feature.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    align="center"
-                  >
-                    {feature.description}
-                  </Typography>
-                </CardContent>
-              </Card>
+                <Box
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: '50%',
+                    backgroundColor: feature.color,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mb: 2,
+                  }}
+                >
+                  {feature.icon}
+                </Box>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  sx={{
+                    color: '#fff',
+                    mb: 2,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {feature.title}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    flex: 1,
+                  }}
+                >
+                  {feature.description}
+                </Typography>
+              </Paper>
             </Grid>
           ))}
         </Grid>
 
-        <Box
-          sx={{
-            mt: 6,
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 2,
-          }}
-        >
+        <Box sx={{ textAlign: 'center', mt: 8 }}>
           <Button
             variant="contained"
             size="large"
             onClick={() => navigate('/practice')}
-            startIcon={<KeyboardIcon />}
+            sx={{
+              backgroundColor: '#9c27b0',
+              color: 'white',
+              px: 6,
+              py: 2,
+              fontSize: '1.2rem',
+              '&:hover': {
+                backgroundColor: '#7b1fa2',
+              },
+            }}
           >
             开始练习
           </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => navigate('/profile')}
-            startIcon={<SchoolIcon />}
-          >
-            查看资料
-          </Button>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

@@ -26,6 +26,8 @@ import {
 } from '@mui/icons-material';
 import VirtualKeyboard from '../components/VirtualKeyboard';
 import styled from '@emotion/styled';
+import keyPressSound from '@/assets/audio/key_press.mp3';
+import keyErrorSound from '@/assets/audio/key_error.mp3';
 
 interface PracticeStats {
   currentSpeed: number;  // 当前速度
@@ -40,219 +42,281 @@ interface PracticeStats {
 // 课程数据
 const courses = [
   {
-    grade: "一年级：魔法入门",
+    grade: "新手入门：键盘基础",
+    icon: "⌨️",
+    spells: [
+      {
+        spell: "起始位置",
+        latin: "asdf jkl;",
+        description: "将手指放在键盘的起始位置，熟悉基本指法"
+      },
+      {
+        spell: "左手练习",
+        latin: "asdf asdf asdf",
+        description: "练习左手基本指法，重复输入直到形成肌肉记忆"
+      },
+      {
+        spell: "右手练习",
+        latin: "jkl; jkl; jkl;",
+        description: "练习右手基本指法，重复输入直到形成肌肉记忆"
+      },
+      {
+        spell: "左右手交替",
+        latin: "asdf jkl; asdf jkl;",
+        description: "练习左右手交替输入，培养双手协调能力"
+      },
+      {
+        spell: "进阶组合",
+        latin: "asjd fkl; asjd fkl;",
+        description: "练习更复杂的指法组合，提高打字流畅度"
+      }
+    ]
+  },
+  {
+    grade: "一年级：魔法石",
     icon: "🏰",
-    courses: [
+    spells: [
       {
-        id: "basic-1",
-        title: "基础手型：起始键位",
-        spells: [
-          {
-            spell: "起始位置练习",
-            latin: "asdf jkl;",
-            description: "将手指放在键盘的起始位置，熟悉基本指法"
-          }
-        ]
+        spell: "阿拉霍洞开",
+        latin: "Alohomora",
+        description: "开锁咒，赫敏用它打开了通往三头犬的门"
       },
       {
-        id: "basic-2",
-        title: "漂浮咒：字母练习",
-        spells: [
-          {
-            spell: "字母练习 A-M",
-            latin: "abcdefghijklm",
-            description: "练习键盘左手区域的字母输入"
-          },
-          {
-            spell: "字母练习 N-Z",
-            latin: "nopqrstuvwxyz",
-            description: "练习键盘右手区域的字母输入"
-          }
-        ]
+        spell: "羽加迪姆勒维奥萨",
+        latin: "Wingardium Leviosa",
+        description: "漂浮咒，让物体漂浮在空中，赫敏用它成功让羽毛飘起"
       },
       {
-        id: "spell-1",
-        title: "光明咒与黑暗咒",
-        spells: [
-          {
-            spell: "荧光闪烁",
-            latin: "Lumos",
-            description: "照明咒，可以使魔杖尖端发出亮光"
-          },
-          {
-            spell: "黑暗闪烁",
-            latin: "Nox",
-            description: "熄灭荧光闪烁的光芒"
-          }
-        ]
+        spell: "全身束缚咒",
+        latin: "Petrificus Totalus",
+        description: "使目标全身僵硬，动弹不得"
+      },
+      {
+        spell: "腿腿锁咒",
+        latin: "Locomotor Mortis",
+        description: "使目标双腿锁在一起，无法行走"
       }
     ]
   },
   {
     grade: "二年级：密室的秘密",
     icon: "🐍",
-    courses: [
+    spells: [
       {
-        id: "spell-2",
-        title: "蛇怪咒练习",
-        spells: [
-          {
-            spell: "蛇佬腔",
-            latin: "Serpensortia",
-            description: "召唤出�����条蛇"
-          }
-        ]
+        spell: "除你武器",
+        latin: "Expelliarmus",
+        description: "缴械咒，可以击飞对手的魔杖"
       },
       {
-        id: "spell-3",
-        title: "除你武器",
-        spells: [
-          {
-            spell: "缴械咒",
-            latin: "Expelliarmus",
-            description: "使对手的魔杖脱手"
-          }
-        ]
+        spell: "咯咯笑咒",
+        latin: "Rictusempra",
+        description: "让目标忍不住大笑，在决斗俱乐部中常用"
+      },
+      {
+        spell: "出蛇咒",
+        latin: "Serpensortia",
+        description: "召唤出一条蛇，马尔福在决斗俱乐部中使用"
+      },
+      {
+        spell: "咒立停",
+        latin: "Finite Incantatem",
+        description: "终止已施放的咒语效果"
+      },
+      {
+        spell: "一忘皆空",
+        latin: "Obliviate",
+        description: "消除记忆的咒语，洛哈特最拿手的咒语"
+      },
+      {
+        spell: "显形墨水",
+        latin: "Aparecium",
+        description: "显现隐形墨水写就的文字"
       }
     ]
   },
   {
-    grade: "三年级：时间转换器",
+    grade: "三年级：阿兹卡班的囚徒",
     icon: "⌛",
-    courses: [
+    spells: [
       {
-        id: "spell-4",
-        title: "守护神咒基础",
-        spells: [
-          {
-            spell: "守护神咒",
-            latin: "Expecto Patronum",
-            description: "召唤守护神，抵御摄魂怪"
-          }
-        ]
+        spell: "呼神护卫",
+        latin: "Expecto Patronum",
+        description: "召唤守护神抵御摄魂怪，需要集中快乐的记忆"
       },
       {
-        id: "spell-5",
-        title: "飞来咒练习",
-        spells: [
-          {
-            spell: "飞来咒",
-            latin: "Accio",
-            description: "使物体飞到施咒者身边"
-          }
-        ]
+        spell: "荒唐咒",
+        latin: "Ridikkulus",
+        description: "对付博格特的咒语，将恐惧转化为滑稽"
+      },
+      {
+        spell: "防水防雾咒",
+        latin: "Impervius",
+        description: "使物品防水防雾，适用于雨天魁地奇比赛"
+      },
+      {
+        spell: "光亮咒",
+        latin: "Lumos",
+        description: "让魔杖发光，适合黑暗环境使用"
+      },
+      {
+        spell: "灭光咒",
+        latin: "Nox",
+        description: "熄灭魔杖的光芒"
+      },
+      {
+        spell: "移动身体咒",
+        latin: "Mobilicorpus",
+        description: "使昏迷的人体漂浮移动"
+      },
+      {
+        spell: "钻心剜骨",
+        latin: "Crucio",
+        description: "造成极度痛苦的黑魔法，是不可饶恕咒之一"
       }
     ]
   },
   {
     grade: "四年级：火焰杯",
     icon: "🔥",
-    courses: [
+    spells: [
       {
-        id: "spell-6",
-        title: "召唤咒练习",
-        spells: [
-          {
-            spell: "飞来飞去",
-            latin: "Accio Repello",
-            description: "召唤和驱逐物体的组合咒语"
-          }
-        ]
+        spell: "飞来咒",
+        latin: "Accio",
+        description: "召唤物品飞来，哈利用它召唤火弩箭对抗火龙"
       },
       {
-        id: "spell-7",
-        title: "昏昏倒地",
-        spells: [
-          {
-            spell: "昏昏倒地",
-            latin: "Stupefy",
-            description: "使目标失去知觉的咒语"
-          }
-        ]
+        spell: "夺魂咒",
+        latin: "Imperio",
+        description: "控制他人意志的黑魔法，是不可饶恕咒之一"
+      },
+      {
+        spell: "钻心剜骨",
+        latin: "Crucio",
+        description: "造成极度痛苦的黑魔法，是不可饶恕咒之一"
+      },
+      {
+        spell: "松手咒",
+        latin: "Relashio",
+        description: "使目标松开钳制，水下使用会喷出热水泡"
       }
     ]
   },
   {
     grade: "五年级：凤凰社",
     icon: "🦅",
-    courses: [
+    spells: [
       {
-        id: "spell-8",
-        title: "守护神咒进阶",
-        spells: [
-          {
-            spell: "实体守护神",
-            latin: "Expecto Patronum Corporeal",
-            description: "召唤出具有实体形态的守护神"
-          }
-        ]
+        spell: "昏迷咒",
+        latin: "Stupefy",
+        description: "击晕对手的咒语，D.A.成员常用"
       },
       {
-        id: "spell-9",
-        title: "爆破咒",
-        spells: [
-          {
-            spell: "粉身碎骨",
-            latin: "Reducto",
-            description: "将目标炸成碎片"
-          }
-        ]
+        spell: "盔甲护身",
+        latin: "Protego",
+        description: "创造防护盾牌，可以反弹咒语"
+      },
+      {
+        spell: "无声咒",
+        latin: "Silencio",
+        description: "使目标失声，在战斗中可以阻止对手施咒"
+      },
+      {
+        spell: "粉碎咒",
+        latin: "Reducto",
+        description: "将物体粉碎的咒语，金妮特别擅长"
       }
     ]
   },
   {
     grade: "六年级：混血王子",
     icon: "👑",
-    courses: [
+    spells: [
       {
-        id: "spell-10",
-        title: "无声咒语",
-        spells: [
-          {
-            spell: "无声咒",
-            latin: "Silencio Maxima",
-            description: "无需说出咒语即可施法"
-          }
-        ]
+        spell: "神锋无影",
+        latin: "Sectumsempra",
+        description: "斯内普发明的黑魔法，造成难以愈合的伤口"
       },
       {
-        id: "spell-11",
-        title: "神锋无影",
-        spells: [
-          {
-            spell: "神锋���影",
-            latin: "Sectumsempra",
-            description: "造成严重伤害的黑魔法"
-          }
-        ]
+        spell: "悬空倒吊",
+        latin: "Levicorpus",
+        description: "使人倒吊在空中，詹姆经常使用的咒语"
+      },
+      {
+        spell: "隔音咒",
+        latin: "Muffliato",
+        description: "让周围人只听到嗡嗡声，防止偷听"
+      },
+      {
+        spell: "混淆咒",
+        latin: "Confundo",
+        description: "使目标混淆困惑，暂时失去判断力"
+      },
+      {
+        spell: "恢复呼吸",
+        latin: "Anapneo",
+        description: "帮助噎住的人恢复呼吸"
+      },
+      {
+        spell: "愈合咒",
+        latin: "Episkey",
+        description: "治疗轻微伤口的咒语"
       }
     ]
   },
   {
     grade: "七年级：死亡圣器",
     icon: "⚡",
-    courses: [
+    spells: [
       {
-        id: "spell-12",
-        title: "终极决斗",
-        spells: [
-          {
-            spell: "除你武器终极版",
-            latin: "Expelliarmus Maxima",
-            description: "更强大的缴械咒"
-          }
-        ]
+        spell: "禁忌追踪",
+        latin: "Taboo",
+        description: "说出被施咒的词会暴露位置，如伏地魔的名字"
       },
       {
-        id: "spell-13",
-        title: "死亡圣器",
-        spells: [
-          {
-            spell: "复活咒",
-            latin: "Prior Incantato",
-            description: "显现魔杖最后施放的咒语"
-          }
-        ]
+        spell: "阿瓦达索命",
+        latin: "Avada Kedavra",
+        description: "致命咒语，使用不可饶恕咒之一"
+      },
+      {
+        spell: "钻心剜骨",
+        latin: "Crucio",
+        description: "造成极度痛苦的不可���恕咒"
+      },
+      {
+        spell: "魂魄出窍",
+        latin: "Imperio",
+        description: "控制他人的不可饶恕咒"
+      }
+    ]
+  },
+  {
+    grade: "彩蛋：神奇动物在哪里",
+    icon: "🦄",
+    spells: [
+      {
+        spell: "显形咒",
+        latin: "Revelio",
+        description: "用于检视是否有伪装或变形，蒂娜用来识破格雷夫斯的真实身份"
+      },
+      {
+        spell: "默默然显形",
+        latin: "Obscurus Revelio",
+        description: "显现默默然的存在，纽特用来帮助克雷登斯"
+      },
+      {
+        spell: "动物护理咒",
+        latin: "Faunapraesidium",
+        description: "保护和治疗神奇动物的咒语，纽特经常使用"
+      },
+      {
+        spell: "扩展咒",
+        latin: "Capacious Extremis",
+        description: "使空间内部变得更大，纽特用在他的手提箱上"
+      },
+      {
+        spell: "修复咒",
+        latin: "Reparo Maxima",
+        description: "大规模修复破损的建筑和物品，用于修复被破坏的纽约城"
       }
     ]
   }
@@ -295,10 +359,9 @@ const TypingText = styled('div')({
 });
 
 const Practice: React.FC = () => {
-  const [expandedGrade, setExpandedGrade] = useState<string | null>("一年级：魔法入门");
+  const [expandedGrade, setExpandedGrade] = useState<string | null>("一年级：魔法石");
   const [currentGrade, setCurrentGrade] = useState(courses[0]);
-  const [currentCourse, setCurrentCourse] = useState(currentGrade.courses[0]);
-  const [currentSpell, setCurrentSpell] = useState(currentCourse.spells[0]);
+  const [currentSpell, setCurrentSpell] = useState(currentGrade.spells[0]);
   
   const [input, setInput] = useState('');
   const [activeKey, setActiveKey] = useState('');
@@ -317,8 +380,25 @@ const Practice: React.FC = () => {
   });
 
   // 添加音频对象
-  const [correctSound] = useState(new Audio('/src/assets/audio/key_press.mp3'));
-  const [wrongSound] = useState(new Audio('/src/assets/audio/key_error.mp3'));
+  const [keyPressAudio] = useState(() => new Audio(keyPressSound));
+  const [keyErrorAudio] = useState(() => new Audio(keyErrorSound));
+
+  // 预加载音频
+  useEffect(() => {
+    keyPressAudio.load();
+    keyErrorAudio.load();
+  }, [keyPressAudio, keyErrorAudio]);
+
+  // 播放音频的工具函数
+  const playSound = useCallback((isError: boolean) => {
+    try {
+      const audio = isError ? keyErrorAudio : keyPressAudio;
+      audio.currentTime = 0;
+      audio.play().catch(console.error);
+    } catch (error) {
+      console.error('播放音频失败:', error);
+    }
+  }, [keyPressAudio, keyErrorAudio]);
 
   const [showAchievement, setShowAchievement] = useState(false);
   const [achievementMessage, setAchievementMessage] = useState('');
@@ -339,6 +419,21 @@ const Practice: React.FC = () => {
 
   const handleGradeClick = (grade: string) => {
     setExpandedGrade(expandedGrade === grade ? null : grade);
+    // 设置当前年级
+    const selectedGrade = courses.find(g => g.grade === grade);
+    if (selectedGrade) {
+      setCurrentGrade(selectedGrade);
+      // 如果是展开年级，则设置该年级的第一个咒语
+      if (expandedGrade !== grade) {
+        setCurrentSpell(selectedGrade.spells[0]);
+        initializePractice(selectedGrade.spells[0]);
+      }
+    }
+  };
+
+  const handleSpellClick = (spell: any) => {
+    setCurrentSpell(spell);
+    initializePractice(spell);
   };
 
   const initializePractice = useCallback((spell: any) => {
@@ -391,16 +486,15 @@ const Practice: React.FC = () => {
   // 检查是否完成当前年级
   const checkGradeCompletion = useCallback(() => {
     const currentGradeIndex = courses.findIndex(g => g.grade === currentGrade.grade);
-    const allSpellsInGrade = currentGrade.courses.flatMap(c => c.spells);
+    const allSpellsInGrade = currentGrade.spells;
     const currentSpellIndex = allSpellsInGrade.findIndex(s => s.spell === currentSpell.spell);
     
     if (currentSpellIndex === allSpellsInGrade.length - 1) {
       // 完成当前年级
       const nextGradeData = courses[currentGradeIndex + 1];
-      setAchievementMessage(`恭喜！你已完成${currentGrade.grade}的所有课程
+      setAchievementMessage(`恭喜！你已完成${currentGrade.grade}的所有课程！
         \n平均速度：${stats.avgSpeed} WPM
-        \n最高速度：${stats.maxSpeed} WPM
-        \n平均准确率：${stats.accuracy}%`);
+        \n最高速度：${stats.maxSpeed} WPM`);
       setNextGrade(nextGradeData);
       setShowAchievement(true);
     }
@@ -410,10 +504,9 @@ const Practice: React.FC = () => {
   const handleAchievementConfirm = useCallback(() => {
     if (nextGrade) {
       setCurrentGrade(nextGrade);
-      setCurrentCourse(nextGrade.courses[0]);
-      setCurrentSpell(nextGrade.courses[0].spells[0]);
+      setCurrentSpell(nextGrade.spells[0]);
       setExpandedGrade(nextGrade.grade);
-      initializePractice(nextGrade.courses[0].spells[0]);
+      initializePractice(nextGrade.spells[0]);
     }
     setShowAchievement(false);
   }, [nextGrade, initializePractice]);
@@ -483,40 +576,48 @@ const Practice: React.FC = () => {
   // 自动跳转到下一课程
   const moveToNextSpell = useCallback(() => {
     const currentGradeIndex = courses.findIndex(g => g.grade === currentGrade.grade);
-    const currentCourseIndex = currentGrade.courses.findIndex(c => c.id === currentCourse.id);
-    const currentSpellIndex = currentCourse.spells.findIndex(s => s.spell === currentSpell.spell);
+    const currentSpellIndex = currentGrade.spells.findIndex(s => s.spell === currentSpell.spell);
 
-    // 在当前课程中查找下一个咒语
-    if (currentSpellIndex < currentCourse.spells.length - 1) {
-      setCurrentSpell(currentCourse.spells[currentSpellIndex + 1]);
-      initializePractice(currentCourse.spells[currentSpellIndex + 1]);
+    // 在当前年级中查找下一个咒语
+    if (currentSpellIndex < currentGrade.spells.length - 1) {
+      setCurrentSpell(currentGrade.spells[currentSpellIndex + 1]);
+      initializePractice(currentGrade.spells[currentSpellIndex + 1]);
       return;
     }
 
-    // 在当前年级中查找下一个课程
-    if (currentCourseIndex < currentGrade.courses.length - 1) {
-      const nextCourse = currentGrade.courses[currentCourseIndex + 1];
-      setCurrentCourse(nextCourse);
-      setCurrentSpell(nextCourse.spells[0]);
-      initializePractice(nextCourse.spells[0]);
-      return;
-    }
-
-    // 如果是年级的最后一个课程，显示年级完成对话框
+    // 如果是年级的最后一个咒语，显示年级完成对话框
     if (currentGradeIndex < courses.length - 1) {
       const nextGradeData = courses[currentGradeIndex + 1];
       setAchievementMessage(`恭喜！你已完成${currentGrade.grade}的所有课程！
         \n平均速度：${stats.avgSpeed} WPM
-        \n最高速度：${stats.maxSpeed} WPM
-        \n平均准确率：${stats.accuracy}%`);
+        \n最高速度：${stats.maxSpeed} WPM`);
       setNextGrade(nextGradeData);
       setShowAchievement(true);
     }
-  }, [currentGrade, currentCourse, currentSpell, courses, stats, initializePractice]);
+  }, [currentGrade, currentSpell, courses, stats, initializePractice]);
 
   // 修改按键处理逻辑
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
-    // 阻止���格键的默认滚动行为
+    const key = event.key;
+
+    // 处理 Enter 键
+    if (key === 'Enter' && showAchievement) {
+      if (nextGrade) {
+        setCurrentGrade(nextGrade);
+        setCurrentSpell(nextGrade.spells[0]);
+        setShowAchievement(false);
+        setInput('');
+        setStartTime(Date.now());
+      }
+      return;
+    }
+
+    // 如果显示成就弹窗，不处理其他按键
+    if (showAchievement) {
+      return;
+    }
+
+    // 阻止空格键的默认滚动行为
     if (event.key === ' ') {
       event.preventDefault();
     }
@@ -536,12 +637,7 @@ const Practice: React.FC = () => {
         setActiveKey('');
         setCorrectKeys([]);
         setWrongKeys([]);
-        try {
-          wrongSound.currentTime = 0;
-          wrongSound.play().catch(err => console.log('音频播放失败:', err));
-        } catch (err) {
-          console.log('音频播放失败:', err);
-        }
+        playSound(true);
       }
       return;
     }
@@ -556,29 +652,18 @@ const Practice: React.FC = () => {
       return;
     }
 
-    const key = event.key;
     setActiveKey(key.toLowerCase());
     
     if (input.length < currentSpell.latin.length) {
       const currentChar = currentSpell.latin[input.length];
-      // 检查字符是否匹配，忽略大小写差异
+      // 检查字符是否匹配，忽大小写差异
       if (key.toLowerCase() === currentChar.toLowerCase()) {
         setCorrectKeys([key.toLowerCase()]);
-        try {
-          correctSound.currentTime = 0;
-          correctSound.play().catch(err => console.log('音频播放失败:', err));
-        } catch (err) {
-          console.log('音频播放失败:', err);
-        }
-        setInput(prev => prev + currentChar); // 使用目标字符，保持大小写一致
+        playSound(false);
+        setInput(prev => prev + currentChar); // 使用目标字符，保持大��写一致
       } else {
         setWrongKeys([key.toLowerCase()]);
-        try {
-          wrongSound.currentTime = 0;
-          wrongSound.play().catch(err => console.log('音频播放失败:', err));
-        } catch (err) {
-          console.log('音频播放失败:', err);
-        }
+        playSound(true);
         setInput(prev => prev + key);
       }
 
@@ -590,16 +675,40 @@ const Practice: React.FC = () => {
     if (input.length === currentSpell.latin.length - 1) {
       const isCorrect = input + key === currentSpell.latin;
       if (isCorrect) {
+        playSound(false);
+        // 短暂延迟后自动进入下一课
+        setTimeout(() => {
+          moveToNextSpell();
+        }, 500);
+      } else {
+        playSound(true);
         // 短暂延迟后自动进入下一课
         setTimeout(() => {
           moveToNextSpell();
         }, 500);
       }
     }
-  }, [input, currentSpell, correctSound, wrongSound, showAchievement, handleAchievementConfirm, moveToNextSpell, startTime, updateStats]);
+  }, [
+    showAchievement,
+    nextGrade,
+    setCurrentGrade,
+    setCurrentSpell,
+    setShowAchievement,
+    setInput,
+    setStartTime,
+    input,
+    currentSpell,
+    moveToNextSpell,
+    startTime,
+    updateStats,
+    playSound,
+    setActiveKey,
+    setCorrectKeys,
+    setWrongKeys
+  ]);
 
   useEffect(() => {
-    // 监听keydown事件来捕获所有按键，包括退格键
+    // 听keydown事件来捕获所有按键，包括退格键
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Backspace' || e.key === 'Enter') {
         e.preventDefault(); // 阻止浏览器默认的后退和回车行为
@@ -715,7 +824,7 @@ const Practice: React.FC = () => {
       <Paper
         elevation={3}
         sx={{
-          width: '240px',
+          width: '300px',
           backgroundColor: 'rgba(20, 20, 28, 0.4)',
           backdropFilter: 'blur(10px)',
           borderRadius: '12px',
@@ -723,18 +832,26 @@ const Practice: React.FC = () => {
           mr: 2,
           border: '1px solid rgba(255, 255, 255, 0.05)',
           height: 'fit-content',
+          position: 'sticky',
+          top: 16,
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{
-            color: 'rgba(255, 215, 0, 0.9)',
-            mb: 2,
-            fontWeight: 'bold',
-          }}
-        >
-          课程列表
-        </Typography>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'rgba(255, 215, 0, 0.9)',
+              fontWeight: 'bold',
+            }}
+          >
+            课程列表
+          </Typography>
+        </Box>
         <List sx={{ width: '100%' }}>
           {courses.map((grade) => (
             <ListItem
@@ -748,8 +865,9 @@ const Practice: React.FC = () => {
               <Button
                 fullWidth
                 onClick={() => handleGradeClick(grade.grade)}
+                endIcon={expandedGrade === grade.grade ? <ExpandLess /> : <ExpandMore />}
                 sx={{
-                  justifyContent: 'flex-start',
+                  justifyContent: 'space-between',
                   color: expandedGrade === grade.grade ? 'rgba(255, 215, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)',
                   backgroundColor: expandedGrade === grade.grade ? 'rgba(255, 215, 0, 0.15)' : 'transparent',
                   '&:hover': {
@@ -759,15 +877,29 @@ const Practice: React.FC = () => {
                   px: 2,
                   py: 1,
                   borderRadius: '6px',
+                  minWidth: 'fit-content',
+                  width: '100%',
                 }}
               >
-                {grade.grade}
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 1,
+                  minWidth: 'fit-content',
+                }}>
+                  <span style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center',
+                    marginRight: '8px',
+                  }}>{grade.icon}</span>
+                  <span>{grade.grade}</span>
+                </Box>
               </Button>
-              {expandedGrade === grade.grade && (
+              <Collapse in={expandedGrade === grade.grade} timeout="auto" unmountOnExit>
                 <List sx={{ pl: 2 }}>
-                  {grade.courses.map((course) => (
+                  {grade.spells.map((spell) => (
                     <ListItem
-                      key={course.id}
+                      key={spell.spell}
                       sx={{
                         p: 0,
                         mb: 0.5,
@@ -775,11 +907,11 @@ const Practice: React.FC = () => {
                     >
                       <Button
                         fullWidth
-                        onClick={() => initializePractice(course.spells[0])}
+                        onClick={() => handleSpellClick(spell)}
                         sx={{
                           justifyContent: 'flex-start',
-                          color: currentSpell.spell === course.spells[0].spell ? 'rgba(255, 215, 0, 0.9)' : 'rgba(255, 255, 255, 0.7)',
-                          backgroundColor: currentSpell.spell === course.spells[0].spell ? 'rgba(255, 215, 0, 0.15)' : 'transparent',
+                          color: currentSpell.spell === spell.spell ? 'rgba(255, 215, 0, 0.9)' : 'rgba(255, 255, 255, 0.7)',
+                          backgroundColor: currentSpell.spell === spell.spell ? 'rgba(255, 215, 0, 0.15)' : 'transparent',
                           '&:hover': {
                             backgroundColor: 'rgba(255, 215, 0, 0.1)',
                           },
@@ -790,12 +922,12 @@ const Practice: React.FC = () => {
                           fontSize: '0.9rem',
                         }}
                       >
-                        {course.title}
+                        {spell.spell}
                       </Button>
                     </ListItem>
                   ))}
                 </List>
-              )}
+              </Collapse>
             </ListItem>
           ))}
         </List>

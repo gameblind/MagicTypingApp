@@ -1,210 +1,284 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
-  Avatar,
   Box,
   Container,
-  Paper,
   Typography,
+  Paper,
+  Avatar,
   Grid,
-  Card,
-  CardContent,
   LinearProgress,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  Chip,
   Divider,
 } from '@mui/material';
 import {
   EmojiEvents as TrophyIcon,
-  Star as StarIcon,
-  Timeline as TimelineIcon,
-  School as SchoolIcon,
+  Speed as SpeedIcon,
+  Grade as StarIcon,
+  Timeline as ProgressIcon,
 } from '@mui/icons-material';
 
-interface Achievement {
-  title: string;
-  description: string;
-  icon: JSX.Element;
-  progress: number;
-}
-
 const Profile: React.FC = () => {
-  const [userData, setUserData] = useState({
-    name: '哈利·波特',
-    level: '进阶巫师',
-    exp: 280,
-    nextLevelExp: 300,
-    totalPracticeTime: 120,
-    averageAccuracy: 95.5,
-    averageWpm: 45,
-  });
-
-  const achievements: Achievement[] = [
-    {
-      title: '初级魔法师',
-      description: '完成基础打字练习',
-      icon: <SchoolIcon color="primary" />,
-      progress: 100,
+  // 模拟用户数据
+  const userData = {
+    name: "哈利·波特",
+    level: 15,
+    title: "格兰芬多学院",
+    avatar: "/src/assets/images/avatars/harry.jpg",
+    experience: 75,
+    stats: {
+      totalPracticeTime: "24小时",
+      averageSpeed: "45 WPM",
+      accuracy: "95%",
+      completedSpells: 42,
     },
-    {
-      title: '速度之星',
-      description: '达到50WPM的打字速度',
-      icon: <TimelineIcon color="secondary" />,
-      progress: 90,
-    },
-    {
-      title: '准确无误',
-      description: '连续5次练习达到98%准确率',
-      icon: <StarIcon color="warning" />,
-      progress: 75,
-    },
-    {
-      title: '魔法大师',
-      description: '解锁所有魔法咒语',
-      icon: <TrophyIcon color="error" />,
-      progress: 60,
-    },
-  ];
+    achievements: [
+      {
+        title: "初级魔法师",
+        description: "完成所有基础课程",
+        icon: "🏆",
+        date: "2024-01-15"
+      },
+      {
+        title: "速度之星",
+        description: "达到50 WPM的打字速度",
+        icon: "⚡",
+        date: "2024-01-20"
+      },
+      {
+        title: "完美施法者",
+        description: "连续10次无错误完成咒语",
+        icon: "✨",
+        date: "2024-01-25"
+      }
+    ],
+    recentActivities: [
+      {
+        spell: "阿拉霍洞开",
+        accuracy: "98%",
+        speed: "42 WPM",
+        date: "2024-02-01"
+      },
+      {
+        spell: "羽加迪姆勒维奥萨",
+        accuracy: "95%",
+        speed: "38 WPM",
+        date: "2024-02-01"
+      },
+      {
+        spell: "除你武器",
+        accuracy: "92%",
+        speed: "45 WPM",
+        date: "2024-01-31"
+      }
+    ]
+  };
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 4 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/src/assets/images/profile-bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        pt: 4,
+        pb: 6,
+      }}
+    >
+      <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* 个人信息卡片 */}
           <Grid item xs={12} md={4}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <Box sx={{ textAlign: 'center', mb: 3 }}>
                 <Avatar
+                  src={userData.avatar}
                   sx={{
                     width: 120,
                     height: 120,
-                    mb: 2,
-                    bgcolor: 'primary.main',
+                    margin: '0 auto',
+                    border: '4px solid #9c27b0',
+                    boxShadow: '0 0 20px rgba(156, 39, 176, 0.3)',
                   }}
-                >
-                  {userData.name[0]}
-                </Avatar>
-                <Typography variant="h5" gutterBottom>
+                />
+                <Typography variant="h5" sx={{ color: '#fff', mt: 2, mb: 1 }}>
                   {userData.name}
                 </Typography>
-                <Typography
-                  variant="subtitle1"
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  {userData.level}
-                </Typography>
-
-                <Box sx={{ width: '100%', mt: 2 }}>
-                  <Typography variant="body2" color="textSecondary">
-                    经验值进度
-                  </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(userData.exp / userData.nextLevelExp) * 100}
-                    sx={{ mt: 1, mb: 1 }}
-                  />
-                  <Typography variant="body2" align="right">
-                    {userData.exp} / {userData.nextLevelExp}
-                  </Typography>
-                </Box>
+                <Chip
+                  label={userData.title}
+                  sx={{
+                    backgroundColor: 'rgba(156, 39, 176, 0.2)',
+                    color: '#9c27b0',
+                    fontWeight: 'bold',
+                  }}
+                />
               </Box>
-            </Paper>
-          </Grid>
+              
+              <Box sx={{ mb: 3 }}>
+                <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 1 }}>
+                  等级 {userData.level}
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={userData.experience}
+                  sx={{
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: '#9c27b0',
+                    }
+                  }}
+                />
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+                  {userData.experience}% 到下一级
+                </Typography>
+              </Box>
 
-          {/* 统计信息卡片 */}
-          <Grid item xs={12} md={8}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                练习统计
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={4}>
-                  <Card>
-                    <CardContent>
-                      <Typography color="textSecondary" gutterBottom>
-                        总练习时间
-                      </Typography>
-                      <Typography variant="h4">
-                        {userData.totalPracticeTime}
-                      </Typography>
-                      <Typography color="textSecondary">分钟</Typography>
-                    </CardContent>
-                  </Card>
+              <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)', my: 2 }} />
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    练习时长
+                  </Typography>
+                  <Typography variant="h6" sx={{ color: '#fff' }}>
+                    {userData.stats.totalPracticeTime}
+                  </Typography>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Card>
-                    <CardContent>
-                      <Typography color="textSecondary" gutterBottom>
-                        平均准确率
-                      </Typography>
-                      <Typography variant="h4">
-                        {userData.averageAccuracy}
-                      </Typography>
-                      <Typography color="textSecondary">%</Typography>
-                    </CardContent>
-                  </Card>
+                <Grid item xs={6}>
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    平均速度
+                  </Typography>
+                  <Typography variant="h6" sx={{ color: '#fff' }}>
+                    {userData.stats.averageSpeed}
+                  </Typography>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Card>
-                    <CardContent>
-                      <Typography color="textSecondary" gutterBottom>
-                        平均速度
-                      </Typography>
-                      <Typography variant="h4">{userData.averageWpm}</Typography>
-                      <Typography color="textSecondary">WPM</Typography>
-                    </CardContent>
-                  </Card>
+                <Grid item xs={6}>
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    准确率
+                  </Typography>
+                  <Typography variant="h6" sx={{ color: '#fff' }}>
+                    {userData.stats.accuracy}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    已掌握咒语
+                  </Typography>
+                  <Typography variant="h6" sx={{ color: '#fff' }}>
+                    {userData.stats.completedSpells}
+                  </Typography>
                 </Grid>
               </Grid>
             </Paper>
           </Grid>
 
-          {/* 成就列表 */}
-          <Grid item xs={12}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                魔法成就
+          {/* 成就和最近活动 */}
+          <Grid item xs={12} md={8}>
+            {/* 成就 */}
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                mb: 4,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <Typography variant="h6" sx={{ color: '#fff', mb: 3 }}>
+                最近成就
               </Typography>
-              <List>
-                {achievements.map((achievement, index) => (
-                  <React.Fragment key={achievement.title}>
-                    <ListItem>
-                      <ListItemIcon>{achievement.icon}</ListItemIcon>
-                      <ListItemText
-                        primary={achievement.title}
-                        secondary={achievement.description}
-                      />
-                      <Box sx={{ width: '30%', ml: 2 }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={achievement.progress}
-                        />
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          align="right"
-                        >
-                          {achievement.progress}%
-                        </Typography>
-                      </Box>
-                    </ListItem>
-                    {index < achievements.length - 1 && <Divider />}
-                  </React.Fragment>
+              <Grid container spacing={3}>
+                {userData.achievements.map((achievement, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Box
+                      sx={{
+                        p: 2,
+                        textAlign: 'center',
+                        backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                        borderRadius: 2,
+                        height: '100%',
+                      }}
+                    >
+                      <Typography variant="h4" sx={{ mb: 1 }}>
+                        {achievement.icon}
+                      </Typography>
+                      <Typography variant="subtitle1" sx={{ color: '#fff', mb: 1 }}>
+                        {achievement.title}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                        {achievement.description}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 1, display: 'block' }}>
+                        {achievement.date}
+                      </Typography>
+                    </Box>
+                  </Grid>
                 ))}
-              </List>
+              </Grid>
+            </Paper>
+
+            {/* 最近活动 */}
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <Typography variant="h6" sx={{ color: '#fff', mb: 3 }}>
+                最近练习
+              </Typography>
+              {userData.recentActivities.map((activity, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    p: 2,
+                    mb: index !== userData.recentActivities.length - 1 ? 2 : 0,
+                    backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Grid container alignItems="center" spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ color: '#fff' }}>
+                        {activity.spell}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4} sm={3}>
+                      <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                        速度: {activity.speed}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4} sm={3}>
+                      <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                        准确率: {activity.accuracy}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4} sm={2}>
+                      <Typography sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+                        {activity.date}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              ))}
             </Paper>
           </Grid>
         </Grid>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

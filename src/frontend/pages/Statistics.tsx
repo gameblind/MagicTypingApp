@@ -1,169 +1,314 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
-  Paper,
   Typography,
+  Paper,
   Grid,
-  ToggleButton,
-  ToggleButtonGroup,
+  LinearProgress,
 } from '@mui/material';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-} from 'recharts';
+  Speed as SpeedIcon,
+  Timer as TimerIcon,
+  Check as AccuracyIcon,
+  TrendingUp as TrendIcon,
+} from '@mui/icons-material';
 
-interface ChartData {
-  date: string;
-  wpm: number;
-  accuracy: number;
-  practiceTime: number;
-}
+// 这里可以添加图表库的导入，比如 recharts
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const Statistics: React.FC = () => {
-  const [timeRange, setTimeRange] = useState<string>('week');
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-
-  // 模拟数据
-  useEffect(() => {
-    const generateData = () => {
-      const data: ChartData[] = [];
-      const ranges = {
-        week: 7,
-        month: 30,
-        year: 12,
-      };
-
-      const days = ranges[timeRange as keyof typeof ranges];
-      for (let i = 0; i < days; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        data.unshift({
-          date: date.toLocaleDateString(),
-          wpm: 30 + Math.random() * 30,
-          accuracy: 85 + Math.random() * 15,
-          practiceTime: Math.round(10 + Math.random() * 50),
-        });
-      }
-      setChartData(data);
-    };
-
-    generateData();
-  }, [timeRange]);
-
-  const handleTimeRangeChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newTimeRange: string
-  ) => {
-    if (newTimeRange !== null) {
-      setTimeRange(newTimeRange);
-    }
+  // 模拟统计数据
+  const stats = {
+    overview: {
+      totalTime: "48小时",
+      averageSpeed: "45 WPM",
+      accuracy: "95%",
+      improvement: "+15%",
+    },
+    dailyProgress: [
+      { date: "2024-01-25", speed: 42, accuracy: 93 },
+      { date: "2024-01-26", speed: 44, accuracy: 94 },
+      { date: "2024-01-27", speed: 43, accuracy: 95 },
+      { date: "2024-01-28", speed: 45, accuracy: 94 },
+      { date: "2024-01-29", speed: 46, accuracy: 96 },
+      { date: "2024-01-30", speed: 47, accuracy: 95 },
+      { date: "2024-01-31", speed: 48, accuracy: 97 },
+    ],
+    spellStats: [
+      {
+        name: "阿拉霍洞开",
+        attempts: 25,
+        bestSpeed: 52,
+        averageAccuracy: 96,
+        progress: 85,
+      },
+      {
+        name: "羽加迪姆勒维奥萨",
+        attempts: 20,
+        bestSpeed: 48,
+        averageAccuracy: 94,
+        progress: 75,
+      },
+      {
+        name: "除你武器",
+        attempts: 18,
+        bestSpeed: 45,
+        averageAccuracy: 92,
+        progress: 70,
+      },
+      {
+        name: "呼神护卫",
+        attempts: 15,
+        bestSpeed: 42,
+        averageAccuracy: 90,
+        progress: 65,
+      },
+    ],
   };
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          练习统计
-        </Typography>
-
-        <Box sx={{ mb: 4 }}>
-          <ToggleButtonGroup
-            value={timeRange}
-            exclusive
-            onChange={handleTimeRangeChange}
-            aria-label="time range"
-          >
-            <ToggleButton value="week">最近一周</ToggleButton>
-            <ToggleButton value="month">最近一月</ToggleButton>
-            <ToggleButton value="year">最近一年</ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-
-        <Grid container spacing={4}>
-          {/* 打字速度图表 */}
-          <Grid item xs={12}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                打字速度趋势
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/src/assets/images/stats-bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        pt: 4,
+        pb: 6,
+      }}
+    >
+      <Container maxWidth="lg">
+        {/* 概览卡片 */}
+        <Grid container spacing={4} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 2,
+                }}
+              >
+                <TimerIcon sx={{ fontSize: 30, color: '#9c27b0' }} />
+              </Box>
+              <Typography variant="h4" sx={{ color: '#fff', mb: 1 }}>
+                {stats.overview.totalTime}
               </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="wpm"
-                    name="WPM"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                总练习时长
+              </Typography>
             </Paper>
           </Grid>
 
-          {/* 准确率图表 */}
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                准确率趋势
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 2,
+                }}
+              >
+                <SpeedIcon sx={{ fontSize: 30, color: '#ffc107' }} />
+              </Box>
+              <Typography variant="h4" sx={{ color: '#fff', mb: 1 }}>
+                {stats.overview.averageSpeed}
               </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis domain={[0, 100]} />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="accuracy"
-                    name="准确率"
-                    stroke="#82ca9d"
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                平均速度
+              </Typography>
             </Paper>
           </Grid>
 
-          {/* 练习时间图表 */}
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                练习时间分布
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 2,
+                }}
+              >
+                <AccuracyIcon sx={{ fontSize: 30, color: '#4caf50' }} />
+              </Box>
+              <Typography variant="h4" sx={{ color: '#fff', mb: 1 }}>
+                {stats.overview.accuracy}
               </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar
-                    dataKey="practiceTime"
-                    name="练习时间(分钟)"
-                    fill="#ffc658"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                平均准确率
+              </Typography>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: 'rgba(20, 20, 28, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 2,
+                }}
+              >
+                <TrendIcon sx={{ fontSize: 30, color: '#f44336' }} />
+              </Box>
+              <Typography variant="h4" sx={{ color: '#fff', mb: 1 }}>
+                {stats.overview.improvement}
+              </Typography>
+              <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                进步幅度
+              </Typography>
             </Paper>
           </Grid>
         </Grid>
-      </Box>
-    </Container>
+
+        {/* 咒语统计 */}
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            backgroundColor: 'rgba(20, 20, 28, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            mb: 4,
+          }}
+        >
+          <Typography variant="h6" sx={{ color: '#fff', mb: 3 }}>
+            咒语掌握度
+          </Typography>
+          <Grid container spacing={3}>
+            {stats.spellStats.map((spell, index) => (
+              <Grid item xs={12} key={index}>
+                <Box sx={{ mb: 3 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography sx={{ color: '#fff' }}>
+                      {spell.name}
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                      {spell.progress}%
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={spell.progress}
+                    sx={{
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: 'rgba(255,255,255,0.1)',
+                      mb: 1,
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: '#9c27b0',
+                      }
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    <span>尝试次数: {spell.attempts}</span>
+                    <span>最佳速度: {spell.bestSpeed} WPM</span>
+                    <span>平均准确率: {spell.averageAccuracy}%</span>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+
+        {/* 每日进度图表 */}
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            backgroundColor: 'rgba(20, 20, 28, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <Typography variant="h6" sx={{ color: '#fff', mb: 3 }}>
+            每日进度
+          </Typography>
+          {/* 这里可以添加图表组件 */}
+          <Box sx={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Typography sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+              图表区域 - 可以使用 Recharts 等库实现
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

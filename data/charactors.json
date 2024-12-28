@@ -1,0 +1,124 @@
+[
+    {
+      "faction": "Order of the Phoenix",
+      "members": [
+        {
+          "englishName": "Harry Potter",
+          "chineseName": "哈利·波特",
+          "introduction": "He is the main protagonist, known as 'The Boy Who Lived' with a lightning-shaped scar on his forehead. He ultimately becomes key to defeating Lord Voldemort.",
+          "chinesePortraitDescription": "一个黑发瘦削、略显矮小的少年，额头有闪电形伤疤，佩戴圆框眼镜，常穿着霍格沃茨校袍或休闲巫师袍，肩背有几分与命运抗争的坚毅。",
+          "englishPortraitPrompt": "A slender teenage boy with messy black hair, a lightning-shaped scar on his forehead, round-rim glasses, dressed in Hogwarts robes. He carries a hint of determination and courage beyond his years."
+        },
+        {
+          "englishName": "Hermione Granger",
+          "chineseName": "赫敏·格兰杰",
+          "introduction": "Born to Muggle parents, she excels in both magical theory and practice. Highly intelligent, diligent, and a crucial member of Harry’s close-knit circle.",
+          "chinesePortraitDescription": "一位棕褐色卷发、眼神机敏的女孩，脸上常有自信的神情，身着霍格沃茨校袍或整洁的巫师斗篷，手里经常抱着一本魔法书，散发着勤奋与机灵的气质。",
+          "englishPortraitPrompt": "A clever teenage girl with frizzy brown hair and a confident gaze, wearing a neat Hogwarts uniform or wizarding cloak, often seen carrying a spellbook. She radiates diligence and intelligence."
+        },
+        {
+          "englishName": "Ron Weasley",
+          "chineseName": "罗恩·韦斯莱",
+          "introduction": "A pure-blood wizard from a humble family. Loyal, kind-hearted, sometimes clumsy, he stands by Harry and Hermione through every ordeal.",
+          "chinesePortraitDescription": "红色头发、高个、稍显瘦削的少年，穿着有些旧但温暖的毛衣或霍格沃茨校服，面露真诚与紧张并存的神情，常流露出朴实善良的气质。",
+          "englishPortraitPrompt": "A tall, lanky teenager with red hair, wearing slightly worn but cozy sweaters or the Hogwarts uniform. He exudes an honest demeanor, sometimes looking nervous yet loyal and friendly."
+        },
+        {
+          "englishName": "Albus Dumbledore",
+          "chineseName": "阿不思·邓布利多",
+          "introduction": "Headmaster of Hogwarts, a venerable wizard of great wisdom and power, and Harry’s mentor in the fight against Voldemort.",
+          "chinesePortraitDescription": "一位身材高瘦、须发花白的老年巫师，佩戴半月形眼镜，身着色彩绚丽、带有星月花纹的长袍，举止优雅睿智，目光中透着慈祥与洞见。",
+          "englishPortraitPrompt": "A tall, slender elder wizard with long silver hair and beard, half-moon spectacles, and a colorful robe adorned with subtle star-and-moon patterns. His demeanor is wise and benevolent, and his eyes convey deep insight."
+        },
+        {
+          "englishName": "Severus Snape",
+          "chineseName": "西弗勒斯·斯内普",
+          "introduction": "The Potions Master, later Defense Against the Dark Arts teacher. Once a Death Eater but truly served Dumbledore, appearing harsh yet secretly aiding Harry.",
+          "chinesePortraitDescription": "一位黑发苍白、瘦削颀长的巫师，面庞冷峻，穿着一身紧闭的黑色长袍，黑色眼睛深沉而难以捉摸，整体透露出阴冷与神秘气息。",
+          "englishPortraitPrompt": "A pale, thin wizard with greasy black hair falling around his face, dressed in a buttoned-up black robe. He bears a stern expression, his dark eyes mysterious and intense, emanating an aura of cold reserve."
+        },
+        {
+          "englishName": "Rubeus Hagrid",
+          "chineseName": "鲁伯·海格",
+          "introduction": "Keeper of Keys and Grounds at Hogwarts, a half-giant with a huge heart. He loves magical creatures and warmly cares for the students.",
+          "chinesePortraitDescription": "异常高大、满脸络腮胡，蓬乱长发覆盖半个脸庞，穿着粗糙的兽皮或厚重外套，整体外观略显邋遢却散发着温暖与憨厚。",
+          "englishPortraitPrompt": "A towering figure with a wild mane of hair and a bushy beard, dressed in rough furs or a large heavy coat. Though rugged and unkempt, he exudes warmth and a gentle spirit."
+        },
+        {
+          "englishName": "Minerva McGonagall",
+          "chineseName": "米奈娃·麦格",
+          "introduction": "Deputy Headmistress and Transfiguration professor. Strict but fair, providing strong support to Gryffindor with hidden warmth.",
+          "chinesePortraitDescription": "一位身形修长的中年女巫，束起利落的发髻，常身着深绿色或宝蓝色长袍，面庞略显冷峻却目光中透着关怀，举止端正威严。",
+          "englishPortraitPrompt": "A tall, poised witch with her hair tightly pinned up, clad in a deep green or navy-blue robe. Her features are stern yet caring, and she carries herself with an air of upright authority."
+        },
+        {
+          "englishName": "Sirius Black",
+          "chineseName": "小天狼星·布莱克",
+          "introduction": "Harry’s godfather, once wrongly imprisoned for being a Death Eater. Rebellious yet caring, he is a crucial pillar of support for Harry.",
+          "chinesePortraitDescription": "高瘦身形、略显憔悴的中年巫师，蓬乱的黑色长发和胡茬，衣着常见深色格纹外套或巫师袍，神情桀骜而内里隐有悲伤。",
+          "englishPortraitPrompt": "A tall, somewhat gaunt wizard with disheveled dark hair and a faint stubble, often wearing a dark-colored coat or robe with a rebellious air. His expression shows a hint of defiance and hidden sorrow."
+        }
+      ]
+    },
+    {
+      "faction": "Death Eaters",
+      "members": [
+        {
+          "englishName": "Draco Malfoy",
+          "chineseName": "德拉科·马尔福",
+          "introduction": "A Slytherin student from the wealthy Malfoy family. Arrogant and scornful, though later conflicted by the war’s realities.",
+          "chinesePortraitDescription": "金色淡发、面庞苍白的贵族少年，常着斯莱特林校袍或考究的巫师服饰，神色傲慢，对外显露优雅与居高临下的姿态。",
+          "englishPortraitPrompt": "A pale, aristocratic teenage boy with sleek platinum-blond hair, typically wearing the green-trimmed Slytherin robes or finely tailored wizard attire. He carries an air of arrogance and superiority."
+        },
+        {
+          "englishName": "Lord Voldemort",
+          "chineseName": "伏地魔",
+          "introduction": "Originally Tom Riddle, the Dark Lord who split his soul into Horcruxes, aiming for immortality and pure-blood supremacy.",
+          "chinesePortraitDescription": "面容苍白瘦削到近乎骷髅，鼻孔呈蛇状扁平，双眼猩红如蛇瞳，身着阴暗色系的长袍，浑身散发着冷酷与无情的黑暗气息。",
+          "englishPortraitPrompt": "A thin, almost skeletal figure with pale skin, slit-like nostrils, and crimson serpent-like eyes, clad in dark, flowing robes. His entire being radiates a chilling aura of malevolent power."
+        },
+        {
+          "englishName": "Bellatrix Lestrange",
+          "chineseName": "贝拉·莱斯特兰奇",
+          "introduction": "A fervently devoted follower of Voldemort from the Black family line, notorious for her sadistic loyalty and cruelty.",
+          "chinesePortraitDescription": "高挑瘦削的身材，蓬乱黑发散发出狂乱之感，黑眸里燃烧着近乎痴狂的狂热，身着黑色或深紫色长袍，骨感脸庞经常浮现扭曲的嗜血笑容。",
+          "englishPortraitPrompt": "A tall, gaunt woman with wild, dark hair, eyes burning with fanatical devotion, dressed in a black or dark purple robe. Her angular face often shows a twisted, cruel grin, revealing her maniacal loyalty to the Dark Lord."
+        },
+        {
+          "englishName": "Lucius Malfoy",
+          "chineseName": "卢修斯·马尔福",
+          "introduction": "Draco’s father and head of the Malfoy family. Wealthy, influential, initially a core supporter of Voldemort before wavering with changing fortunes.",
+          "chinesePortraitDescription": "一位面容苍白、气质高傲的中年贵族巫师，头发是银色金属光泽的长发，穿着华贵的深色巫师长袍，时常握着精致的手杖魔杖，眼神中透露着对地位与权势的追求。",
+          "englishPortraitPrompt": "A pale-faced, aristocratic middle-aged wizard with long, platinum-blond hair, clad in luxurious dark robes. Often seen clutching an ornate walking-cane wand, exuding a lofty demeanor and an evident pursuit of status and power."
+        },
+        {
+          "englishName": "Fenrir Greyback",
+          "chineseName": "芬里尔·格雷伯克",
+          "introduction": "A brutal werewolf aligned with the Death Eaters, infamous for preying on children. He boasts of spreading terror and lycanthropy.",
+          "chinesePortraitDescription": "一个满脸伤疤、双目狰狞的魁梧男子，体态如野兽般健壮，胡子拉碴，穿着破旧的皮革或毛皮外套，散发着血腥与野性的气息，随时可能暴起伤人。",
+          "englishPortraitPrompt": "A burly man with a heavily scarred face and savage eyes, exuding a feral aura. He wears tattered leathers or furs, sporting unkempt facial hair and radiating the bloodthirsty presence of a seasoned werewolf ready to pounce on his prey."
+        },
+        {
+          "englishName": "Barty Crouch Jr.",
+          "chineseName": "小巴蒂·克劳奇",
+          "introduction": "Son of a high-ranking Ministry official, he was drawn to Voldemort’s cause and impersonated Mad-Eye Moody during the Triwizard Tournament.",
+          "chinesePortraitDescription": "瘦削又神经质的年轻人，浅棕色头发常显散乱，面容时而扭曲癫狂，身着普通巫师长袍，但眼神中透露着极端的偏执和对黑魔王的仇恨与崇拜。",
+          "englishPortraitPrompt": "A lean, nervy young man with disheveled light brown hair and a face prone to twisted expressions, wearing a standard wizard robe. His eyes show an extreme obsession and twisted reverence for the Dark Lord."
+        },
+        {
+          "englishName": "Peter Pettigrew",
+          "chineseName": "彼得·佩蒂格鲁",
+          "introduction": "Nicknamed 'Wormtail,' he betrayed the Potters to Voldemort out of cowardice. Follows powerful allies to ensure his own survival.",
+          "chinesePortraitDescription": "身材矮胖、行为畏畏缩缩的小个子巫师，稀疏的啮齿类面孔特征，喜欢穿着过时的旧袍子，时常躲在阴影里，眼神中透着慌张与献媚。",
+          "englishPortraitPrompt": "A short, pudgy wizard with a rodent-like face, wearing outdated, worn robes, often lurking nervously in the shadows. His eyes betray fear and an eagerness to appease more powerful allies."
+        },
+        {
+          "englishName": "Narcissa Malfoy",
+          "chineseName": "纳西莎·马尔福",
+          "introduction": "Lucius’s wife and Draco’s mother. Though sharing pure-blood ideals, she ultimately risks deceiving Voldemort to protect her son.",
+          "chinesePortraitDescription": "身材修长、浅金色长发的贵妇人，举止优雅而高傲，常着考究的黑色或暗色系长袍，神情冷艳，却有时会透出对家庭的深切关切。",
+          "englishPortraitPrompt": "A tall and elegant witch with pale blond hair, typically wearing refined, dark-hued robes. She maintains a cool, aristocratic bearing, but occasionally displays fierce maternal protectiveness for her son."
+        }
+      ]
+    }
+  ]
