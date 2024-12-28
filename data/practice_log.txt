@@ -1,0 +1,27 @@
+2024-12-28 18:08:24,552 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-28 18:08:24,552 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 18:09:16,101 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-28 18:09:16,101 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 18:19:02,312 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-28 18:19:02,312 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 18:19:40,629 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-28 18:19:40,629 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 18:20:12,907 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-28 18:20:12,907 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 18:29:36,220 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8000
+2024-12-28 18:29:36,220 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 19:42:53,573 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8000
+2024-12-28 19:42:53,574 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 21:40:07,487 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3002
+2024-12-28 21:40:07,487 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-12-28 21:40:43,917 - werkzeug - INFO - 127.0.0.1 - - [28/Dec/2024 21:40:43] "[33mGET / HTTP/1.1[0m" 404 -
+2024-12-28 21:40:44,075 - werkzeug - INFO - 127.0.0.1 - - [28/Dec/2024 21:40:44] "[33mGET / HTTP/1.1[0m" 404 -
+2024-12-28 21:40:44,783 - werkzeug - INFO - 127.0.0.1 - - [28/Dec/2024 21:40:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
