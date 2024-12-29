@@ -426,19 +426,19 @@ const Practice: React.FC = () => {
       setCurrentGrade(selectedGrade);
       // 设置背景
       if (grade.includes('一年级')) {
-        setCurrentBackground('/assets/images/Grade1_bg.png');
+        setCurrentBackground('/assets/images/Grade1_bg.jpg');
       } else if (grade.includes('二年级')) {
-        setCurrentBackground('/assets/images/Grade2_bg.png');
+        setCurrentBackground('/assets/images/Grade2_bg.jpg');
       } else if (grade.includes('三年级')) {
-        setCurrentBackground('/assets/images/Grade3_bg.png');
+        setCurrentBackground('/assets/images/Grade3_bg.jpg');
       } else if (grade.includes('四年级')) {
-        setCurrentBackground('/assets/images/Grade4_bg.png');
+        setCurrentBackground('/assets/images/Grade4_bg.jpg');
       } else if (grade.includes('五年级')) {
-        setCurrentBackground('/assets/images/Grade5_bg.png');
+        setCurrentBackground('/assets/images/Grade5_bg.jpg');
       } else if (grade.includes('六年级')) {
-        setCurrentBackground('/assets/images/Grade6_bg.png');
+        setCurrentBackground('/assets/images/Grade6_bg.jpg');
       } else if (grade.includes('七年级')) {
-        setCurrentBackground('/assets/images/Grade7_bg.png');
+        setCurrentBackground('/assets/images/Grade7_bg.jpg');
       } else {
         setCurrentBackground('/assets/images/hogwarts-bg.png');
       }
@@ -527,19 +527,19 @@ const Practice: React.FC = () => {
       setExpandedGrade(nextGrade.grade);
       // 设置新年级的背景
       if (nextGrade.grade.includes('一年级')) {
-        setCurrentBackground('/assets/images/Grade1_bg.png');
+        setCurrentBackground('/assets/images/Grade1_bg.jpg');
       } else if (nextGrade.grade.includes('二年级')) {
-        setCurrentBackground('/assets/images/Grade2_bg.png');
+        setCurrentBackground('/assets/images/Grade2_bg.jpg');
       } else if (nextGrade.grade.includes('三年级')) {
-        setCurrentBackground('/assets/images/Grade3_bg.png');
+        setCurrentBackground('/assets/images/Grade3_bg.jpg');
       } else if (nextGrade.grade.includes('四年级')) {
-        setCurrentBackground('/assets/images/Grade4_bg.png');
+        setCurrentBackground('/assets/images/Grade4_bg.jpg');
       } else if (nextGrade.grade.includes('五年级')) {
-        setCurrentBackground('/assets/images/Grade5_bg.png');
+        setCurrentBackground('/assets/images/Grade5_bg.jpg');
       } else if (nextGrade.grade.includes('六年级')) {
-        setCurrentBackground('/assets/images/Grade6_bg.png');
+        setCurrentBackground('/assets/images/Grade6_bg.jpg');
       } else if (nextGrade.grade.includes('七年级')) {
-        setCurrentBackground('/assets/images/Grade7_bg.png');
+        setCurrentBackground('/assets/images/Grade7_bg.jpg');
       } else {
         setCurrentBackground('/assets/images/hogwarts-bg.png');
       }
