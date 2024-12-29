@@ -23,7 +23,7 @@ const Profile: React.FC = () => {
     name: "哈利·波特",
     level: 15,
     title: "格兰芬多学院",
-    avatar: "/src/assets/images/avatars/harry.jpg",
+    avatar: "/assets/images/emma.png",
     experience: 75,
     stats: {
       totalPracticeTime: "24小时",
@@ -77,7 +77,7 @@ const Profile: React.FC = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/src/assets/images/profile-bg.jpg)',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/assets/images/hogwarts-bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         pt: 4,
@@ -100,6 +100,7 @@ const Profile: React.FC = () => {
               <Box sx={{ textAlign: 'center', mb: 3 }}>
                 <Avatar
                   src={userData.avatar}
+                  alt={userData.name}
                   sx={{
                     width: 120,
                     height: 120,
@@ -107,7 +108,9 @@ const Profile: React.FC = () => {
                     border: '4px solid #9c27b0',
                     boxShadow: '0 0 20px rgba(156, 39, 176, 0.3)',
                   }}
-                />
+                >
+                  {userData.name[0]}
+                </Avatar>
                 <Typography variant="h5" sx={{ color: '#fff', mt: 2, mb: 1 }}>
                   {userData.name}
                 </Typography>

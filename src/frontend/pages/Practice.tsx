@@ -26,8 +26,6 @@ import {
 } from '@mui/icons-material';
 import VirtualKeyboard from '../components/VirtualKeyboard';
 import styled from '@emotion/styled';
-import keyPressSound from '@/assets/audio/key_press.mp3';
-import keyErrorSound from '@/assets/audio/key_error.mp3';
 
 interface PracticeStats {
   currentSpeed: number;  // 当前速度
@@ -381,23 +379,46 @@ const Practice: React.FC = () => {
   });
 
   // 添加音频对象
-  const [keyPressAudio] = useState(() => new Audio(keyPressSound));
-  const [keyErrorAudio] = useState(() => new Audio(keyErrorSound));
+  const [keyPressAudio] = useState(() => {
+    try {
+      return new Audio('/assets/audio/key_press.mp3');
+    } catch (error) {
+      console.warn('按键音效加载失败:', error);
+      return null;
+    }
+  });
+  
+  const [keyErrorAudio] = useState(() => {
+    try {
+      return new Audio('/assets/audio/key_error.mp3');
+    } catch (error) {
+      console.warn('错误音效加载失败:', error);
+      return null;
+    }
+  });
 
   // 预加载音频
   useEffect(() => {
-    keyPressAudio.load();
-    keyErrorAudio.load();
+    if (keyPressAudio) {
+      keyPressAudio.load();
+    }
+    if (keyErrorAudio) {
+      keyErrorAudio.load();
+    }
   }, [keyPressAudio, keyErrorAudio]);
 
   // 播放音频的工具函数
   const playSound = useCallback((isError: boolean) => {
     try {
       const audio = isError ? keyErrorAudio : keyPressAudio;
-      audio.currentTime = 0;
-      audio.play().catch(console.error);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(error => {
+          console.warn('音效播放失败:', error);
+        });
+      }
     } catch (error) {
-      console.error('播放音频失败:', error);
+      console.warn('播放音频失败:', error);
     }
   }, [keyPressAudio, keyErrorAudio]);
 
@@ -1019,17 +1040,22 @@ const Practice: React.FC = () => {
               mb: 2
             }}>
               <img 
-                src={`/src/assets/images/icons/${
-                  currentGrade.grade.includes('一年级') ? 'wand-basic.png' :
+                src={`/assets/images/icons/${
+                  currentGrade.grade.includes('新手入门') ? 'wand-basic.png' :
+                  currentGrade.grade.includes('一年级') ? 'golden-snitch.png' :
                   currentGrade.grade.includes('二年级') ? 'basilisk.png' :
                   currentGrade.grade.includes('三年级') ? 'time-turner.png' :
                   currentGrade.grade.includes('四年级') ? 'goblet.png' :
                   currentGrade.grade.includes('五年级') ? 'phoenix.png' :
                   currentGrade.grade.includes('六年级') ? 'potions-book.png' :
                   'deathly-hallows.png'
-                }`} 
-                alt="课程图标"
-                style={{ width: 32, height: 32 }}
+                }`}
+                alt={currentSpell.spell}
+                style={{ width: 48, height: 48 }}
+                onError={(e) => {
+                  console.warn('图标加载失败');
+                  e.currentTarget.src = '/assets/images/icons/wand-basic.png';
+                }}
               />
               <Typography variant="h5" sx={{ color: '#ffd700' }}>
                 {currentSpell.spell}
@@ -1124,7 +1150,7 @@ const Practice: React.FC = () => {
           alignItems: 'center',
           gap: 2
         }}>
-          <img src="/src/assets/images/achievement_master.png" alt="成就" style={{ width: 48, height: 48 }} />
+          <img src="/assets/images/achievement_master.png" alt="成就" style={{ width: 48, height: 48 }} />
           <Typography variant="h6" component="span">
             成就达成！
           </Typography>

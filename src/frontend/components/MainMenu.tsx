@@ -77,7 +77,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ isCollapsed, onCollapse }) => {
 
       <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
         <img
-          src="/src/assets/images/logo.png"
+          src="/assets/images/logo.png"
           alt="Logo"
           style={{
             width: isCollapsed ? '32px' : '40px',

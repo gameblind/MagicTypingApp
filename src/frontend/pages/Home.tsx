@@ -53,7 +53,7 @@ const Home: React.FC = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/src/assets/images/hogwarts-bg.jpg)',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/assets/images/hogwarts-bg.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         pt: 8,

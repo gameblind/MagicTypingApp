@@ -16,6 +16,7 @@ import {
   Timeline as StatsIcon,
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
+  SportsKabaddi as SportsKabaddiIcon,
 } from '@mui/icons-material';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -25,6 +26,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const menuItems = [
     { path: '/', icon: <HomeIcon />, text: '首页' },
     { path: '/practice', icon: <GameIcon />, text: '练习' },
+    { path: '/battle', icon: <SportsKabaddiIcon />, text: '战斗' },
     { path: '/profile', icon: <PersonIcon />, text: '个人资料' },
     { path: '/statistics', icon: <StatsIcon />, text: '统计' },
   ];
@@ -34,7 +36,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       display: 'flex', 
       minHeight: '100vh',
       backgroundColor: '#14141C',
-      backgroundImage: 'url(/src/assets/images/background.jpg)',
+      backgroundImage: 'url(/assets/images/background.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -71,7 +73,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           {!isCollapsed && (
             <>
               <img
-                src="/src/assets/images/logo.png"
+                src="/assets/images/logo.png"
                 alt="Logo"
                 style={{ width: 32, height: 32 }}
               />
