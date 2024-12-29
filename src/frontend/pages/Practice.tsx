@@ -280,7 +280,7 @@ const courses = [
       {
         spell: "钻心剜骨",
         latin: "Crucio",
-        description: "造成极度痛苦的不可���恕咒"
+        description: "造成极度痛苦的不可饶恕咒"
       },
       {
         spell: "魂魄出窍",
@@ -359,9 +359,10 @@ const TypingText = styled('div')({
 });
 
 const Practice: React.FC = () => {
-  const [expandedGrade, setExpandedGrade] = useState<string | null>("一年级：魔法石");
+  const [expandedGrade, setExpandedGrade] = useState<string | null>(courses[0].grade);
   const [currentGrade, setCurrentGrade] = useState(courses[0]);
-  const [currentSpell, setCurrentSpell] = useState(currentGrade.spells[0]);
+  const [currentSpell, setCurrentSpell] = useState(courses[0].spells[0]);
+  const [currentBackground, setCurrentBackground] = useState('/assets/images/hogwarts-bg.png');
   
   const [input, setInput] = useState('');
   const [activeKey, setActiveKey] = useState('');
@@ -423,6 +424,24 @@ const Practice: React.FC = () => {
     const selectedGrade = courses.find(g => g.grade === grade);
     if (selectedGrade) {
       setCurrentGrade(selectedGrade);
+      // 设置背景
+      if (grade.includes('一年级')) {
+        setCurrentBackground('/assets/images/Grade1_bg.png');
+      } else if (grade.includes('二年级')) {
+        setCurrentBackground('/assets/images/Grade2_bg.png');
+      } else if (grade.includes('三年级')) {
+        setCurrentBackground('/assets/images/Grade3_bg.png');
+      } else if (grade.includes('四年级')) {
+        setCurrentBackground('/assets/images/Grade4_bg.png');
+      } else if (grade.includes('五年级')) {
+        setCurrentBackground('/assets/images/Grade5_bg.png');
+      } else if (grade.includes('六年级')) {
+        setCurrentBackground('/assets/images/Grade6_bg.png');
+      } else if (grade.includes('七年级')) {
+        setCurrentBackground('/assets/images/Grade7_bg.png');
+      } else {
+        setCurrentBackground('/assets/images/hogwarts-bg.png');
+      }
       // 如果是展开年级，则设置该年级的第一个咒语
       if (expandedGrade !== grade) {
         setCurrentSpell(selectedGrade.spells[0]);
@@ -506,6 +525,24 @@ const Practice: React.FC = () => {
       setCurrentGrade(nextGrade);
       setCurrentSpell(nextGrade.spells[0]);
       setExpandedGrade(nextGrade.grade);
+      // 设置新年级的背景
+      if (nextGrade.grade.includes('一年级')) {
+        setCurrentBackground('/assets/images/Grade1_bg.png');
+      } else if (nextGrade.grade.includes('二年级')) {
+        setCurrentBackground('/assets/images/Grade2_bg.png');
+      } else if (nextGrade.grade.includes('三年级')) {
+        setCurrentBackground('/assets/images/Grade3_bg.png');
+      } else if (nextGrade.grade.includes('四年级')) {
+        setCurrentBackground('/assets/images/Grade4_bg.png');
+      } else if (nextGrade.grade.includes('五年级')) {
+        setCurrentBackground('/assets/images/Grade5_bg.png');
+      } else if (nextGrade.grade.includes('六年级')) {
+        setCurrentBackground('/assets/images/Grade6_bg.png');
+      } else if (nextGrade.grade.includes('七年级')) {
+        setCurrentBackground('/assets/images/Grade7_bg.png');
+      } else {
+        setCurrentBackground('/assets/images/hogwarts-bg.png');
+      }
       initializePractice(nextGrade.spells[0]);
     }
     setShowAchievement(false);
@@ -660,7 +697,7 @@ const Practice: React.FC = () => {
       if (key.toLowerCase() === currentChar.toLowerCase()) {
         setCorrectKeys([key.toLowerCase()]);
         playSound(false);
-        setInput(prev => prev + currentChar); // 使用目标字符，保持大��写一致
+        setInput(prev => prev + currentChar); // 使用目标字符，保持大小写一致
       } else {
         setWrongKeys([key.toLowerCase()]);
         playSound(true);
@@ -819,6 +856,22 @@ const Practice: React.FC = () => {
       minHeight: 'calc(100vh - 48px)',
       position: 'relative',
       overflow: 'hidden',
+      backgroundImage: `url(${currentBackground})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'fixed',
+      transition: 'background-image 0.5s ease-in-out',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backdropFilter: 'blur(1px)',
+      },
     }}>
       {/* 课程列表 - 始终显示 */}
       <Paper
@@ -834,6 +887,7 @@ const Practice: React.FC = () => {
           height: 'fit-content',
           position: 'sticky',
           top: 16,
+          zIndex: 1,
         }}
       >
         <Box sx={{
