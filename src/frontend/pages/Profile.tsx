@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
@@ -6,47 +6,23 @@ import {
   Paper,
   Grid,
   Avatar,
-  Button,
-  Divider,
+  Badge,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   LinearProgress,
-  Badge,
 } from '@mui/material';
 import {
   School as SchoolIcon,
   EmojiEvents as TrophyIcon,
-  Star as StarIcon,
   AutoStories as SpellIcon,
   Edit as EditIcon,
 } from '@mui/icons-material';
+import { useUserData } from '../contexts/UserDataContext';
 
 const Profile: React.FC = () => {
-  // 模拟用户数据
-  const [userData] = useState({
-    name: '哈利·波特',
-    avatar: '/assets/images/harry.png',
-    house: '格兰芬多',
-    level: 5,
-    exp: 75,
-    title: '魔法学徒',
-    spellsUnlocked: 12,
-    totalSpells: 20,
-    achievements: [
-      { id: 1, name: '初次施法', description: '完成第一次打字练习', icon: '🎯' },
-      { id: 2, name: '速度之星', description: '达到50WPM', icon: '⚡' },
-      { id: 3, name: '完美施法', description: '100%准确率完成练习', icon: '✨' },
-      { id: 4, name: '决斗高手', description: '赢得10场决斗', icon: '🏆' },
-    ],
-    unlockedSpells: [
-      { name: '除你武器', mastery: 80 },
-      { name: '昏昏倒地', mastery: 65 },
-      { name: '盔甲护身', mastery: 90 },
-      { name: '统统石化', mastery: 45 },
-    ],
-  });
+  const { userData } = useUserData();
 
   return (
     <Box sx={{
@@ -106,7 +82,7 @@ const Profile: React.FC = () => {
                 </Typography>
                 <LinearProgress
                   variant="determinate"
-                  value={userData.exp}
+                  value={(userData.exp % 100)}
                   sx={{
                     height: 6,
                     borderRadius: 3,

@@ -1,163 +1,176 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import {
   Box,
+  Drawer,
+  AppBar,
+  Toolbar,
   List,
+  Typography,
+  Divider,
+  IconButton,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
-  Paper,
-  IconButton,
 } from '@mui/material';
 import {
-  Home as HomeIcon,
-  SportsEsports as GameIcon,
-  Person as PersonIcon,
-  Timeline as StatsIcon,
-  ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
-  SportsKabaddi as SportsKabaddiIcon,
+  ChevronLeft as ChevronLeftIcon,
+  Home as HomeIcon,
+  School as SchoolIcon,
+  EmojiEvents as BattleIcon,
+  Person as ProfileIcon,
+  BarChart as StatsIcon,
 } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
-const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+import Home from '../pages/Home';
+import Practice from '../pages/Practice';
+import Battle from '../pages/Battle';
+import Profile from '../pages/Profile';
+import Statistics from '../pages/Statistics';
+
+const drawerWidth = 240;
+
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+  open?: boolean;
+}>(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  }),
+}));
+
+const AppBarStyled = styled(AppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<{
+  open?: boolean;
+}>(({ theme, open }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end',
+}));
+
+const menuItems = [
+  { text: '首页', icon: <HomeIcon />, path: '/' },
+  { text: '练习', icon: <SchoolIcon />, path: '/practice' },
+  { text: '战斗', icon: <BattleIcon />, path: '/battle' },
+  { text: '个人资料', icon: <ProfileIcon />, path: '/profile' },
+  { text: '统计', icon: <StatsIcon />, path: '/statistics' },
+];
+
+const Layout: React.FC = () => {
+  const [open, setOpen] = useState(false);
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const menuItems = [
-    { path: '/', icon: <HomeIcon />, text: '首页' },
-    { path: '/practice', icon: <GameIcon />, text: '练习' },
-    { path: '/battle', icon: <SportsKabaddiIcon />, text: '战斗' },
-    { path: '/profile', icon: <PersonIcon />, text: '个人资料' },
-    { path: '/statistics', icon: <StatsIcon />, text: '统计' },
-  ];
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      minHeight: '100vh',
-      backgroundColor: '#14141C',
-      backgroundImage: 'url(/assets/images/background.jpg)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundAttachment: 'fixed',
-    }}>
-      {/* 左侧导航栏 */}
-      <Paper
-        elevation={3}
-        sx={{
-          width: isCollapsed ? 60 : 200,
-          backgroundColor: 'rgba(20, 20, 28, 0.8)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'fixed',
-          height: '100vh',
-          left: 0,
-          top: 0,
-          transition: 'width 0.3s ease',
-          overflow: 'hidden',
-          zIndex: 1000,
-        }}
-      >
-        {/* Logo和收缩按钮 */}
-        <Box
-          sx={{
-            p: 2,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: isCollapsed ? 'center' : 'space-between',
-          }}
-        >
-          {!isCollapsed && (
-            <>
-              <img
-                src="/assets/images/logo.png"
-                alt="Logo"
-                style={{ width: 32, height: 32 }}
-              />
-              <Box
-                sx={{
-                  color: '#ffd700',
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold',
-                  flex: 1,
-                  ml: 1,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                哈利波特打字
-              </Box>
-            </>
-          )}
+    <Box sx={{ display: 'flex' }}>
+      <AppBarStyled position="fixed" open={open}>
+        <Toolbar>
           <IconButton
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            sx={{ 
-              color: '#ffd700',
-              p: 0.5,
-              minWidth: 32,
-            }}
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
           >
-            {isCollapsed ? <MenuIcon /> : <ChevronLeftIcon />}
+            <MenuIcon />
           </IconButton>
-        </Box>
-
-        {/* 导航菜单 */}
-        <List sx={{ flex: 1, pt: 2 }}>
+          <Typography variant="h6" noWrap component="div">
+            哈利打字
+          </Typography>
+        </Toolbar>
+      </AppBarStyled>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+            backgroundColor: 'rgba(20, 20, 28, 0.9)',
+            backdropFilter: 'blur(10px)',
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open={open}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <List>
           {menuItems.map((item) => (
-            <ListItem
-              key={item.path}
-              component={Link}
-              to={item.path}
-              sx={{
-                color: location.pathname === item.path ? '#ffd700' : 'rgba(255, 255, 255, 0.7)',
-                backgroundColor: location.pathname === item.path ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                },
-                borderRadius: 1,
-                mb: 1,
-                mx: 1,
-                px: isCollapsed ? 1 : 2,
-                minHeight: 48,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  color: location.pathname === item.path ? '#ffd700' : 'rgba(255, 255, 255, 0.7)',
-                  minWidth: isCollapsed ? 32 : 40,
-                  justifyContent: isCollapsed ? 'center' : 'flex-start',
-                }}
+            <ListItem key={item.text} disablePadding>
+              <ListItemButton
+                component={Link}
+                to={item.path}
+                selected={location.pathname === item.path}
               >
-                {item.icon}
-              </ListItemIcon>
-              {!isCollapsed && (
+                <ListItemIcon sx={{ color: location.pathname === item.path ? 'primary.main' : 'inherit' }}>
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText
                   primary={item.text}
-                  primaryTypographyProps={{
-                    fontSize: '1rem',
-                    fontWeight: location.pathname === item.path ? 'bold' : 'normal',
+                  sx={{
+                    color: location.pathname === item.path ? 'primary.main' : 'inherit',
                   }}
                 />
-              )}
+              </ListItemButton>
             </ListItem>
           ))}
         </List>
-      </Paper>
-
-      {/* 主内容区域 */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          ml: isCollapsed ? '60px' : '200px',
-          minHeight: '100vh',
-          transition: 'margin-left 0.3s ease',
-        }}
-      >
-        {children}
-      </Box>
+      </Drawer>
+      <Main open={open}>
+        <DrawerHeader />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/practice" element={<Practice />} />
+          <Route path="/battle" element={<Battle />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/statistics" element={<Statistics />} />
+        </Routes>
+      </Main>
     </Box>
   );
 };
