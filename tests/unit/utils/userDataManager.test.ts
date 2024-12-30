@@ -3,11 +3,12 @@ import {
   saveUserData,
   updateUserData,
   addPracticeRecord,
+  addBattleRecord,
   unlockAchievement,
   updateSpellProgress,
   checkAndUpdateLevel,
 } from '../../../src/frontend/utils/userDataManager';
-import { UserData, Achievement, PracticeRecord } from '../../../src/frontend/types/user';
+import { UserData, Achievement, PracticeRecord, BattleRecord } from '../../../src/frontend/types/user';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -26,20 +27,11 @@ const localStorageMock = (() => {
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 describe('User Data Manager', () => {
+  let testData: UserData;
+
   beforeEach(() => {
     localStorageMock.clear();
-  });
-
-  test('loadUserData returns default data for new user', () => {
-    const userData = loadUserData();
-    expect(userData.name).toBe('新学员');
-    expect(userData.level).toBe(1);
-    expect(userData.exp).toBe(0);
-    expect(userData.id).toMatch(/^user_/);
-  });
-
-  test('saveUserData and loadUserData work together', () => {
-    const testData: UserData = {
+    testData = {
       id: 'test_user',
       name: '测试用户',
       avatar: '/test.png',
@@ -52,17 +44,34 @@ describe('User Data Manager', () => {
       achievements: [],
       unlockedSpells: [],
       practiceHistory: [],
+      battleHistory: [],
+      currentWinStreak: 0,
+      bestWinStreak: 0,
       stats: {
         totalPracticeTime: 0,
         totalPracticeCount: 0,
         averageAccuracy: 0,
         averageWpm: 0,
         bestWpm: 0,
+        totalBattles: 0,
+        totalWins: 0,
+        totalLosses: 0,
+        winRate: 0,
       },
       createdAt: new Date().toISOString(),
       lastLoginAt: new Date().toISOString(),
     };
+  });
 
+  test('loadUserData returns default data for new user', () => {
+    const userData = loadUserData();
+    expect(userData.name).toBe('新学员');
+    expect(userData.level).toBe(1);
+    expect(userData.exp).toBe(0);
+    expect(userData.id).toMatch(/^user_/);
+  });
+
+  test('saveUserData and loadUserData work together', () => {
     saveUserData(testData);
     const loadedData = loadUserData();
     expect(loadedData).toEqual(testData);
@@ -97,6 +106,90 @@ describe('User Data Manager', () => {
     expect(userData.stats.averageAccuracy).toBe(95);
     expect(userData.stats.averageWpm).toBe(60);
     expect(userData.stats.bestWpm).toBe(60);
+  });
+
+  test('addBattleRecord updates battle history and stats for win', () => {
+    const record: BattleRecord = {
+      id: 'battle_1',
+      opponent: '对手1',
+      result: 'win',
+      spell: '除你武器',
+      accuracy: 95,
+      wpm: 60,
+      date: new Date().toISOString(),
+    };
+
+    addBattleRecord(record);
+    const userData = loadUserData();
+    
+    expect(userData.battleHistory[0]).toEqual(record);
+    expect(userData.stats.totalBattles).toBe(1);
+    expect(userData.stats.totalWins).toBe(1);
+    expect(userData.stats.totalLosses).toBe(0);
+    expect(userData.stats.winRate).toBe(100);
+    expect(userData.currentWinStreak).toBe(1);
+    expect(userData.bestWinStreak).toBe(1);
+  });
+
+  test('addBattleRecord updates battle history and stats for loss', () => {
+    const record: BattleRecord = {
+      id: 'battle_1',
+      opponent: '对手1',
+      result: 'lose',
+      spell: '除你武器',
+      accuracy: 85,
+      wpm: 50,
+      date: new Date().toISOString(),
+    };
+
+    addBattleRecord(record);
+    const userData = loadUserData();
+    
+    expect(userData.battleHistory[0]).toEqual(record);
+    expect(userData.stats.totalBattles).toBe(1);
+    expect(userData.stats.totalWins).toBe(0);
+    expect(userData.stats.totalLosses).toBe(1);
+    expect(userData.stats.winRate).toBe(0);
+    expect(userData.currentWinStreak).toBe(0);
+  });
+
+  test('addBattleRecord correctly tracks win streak', () => {
+    const createBattleRecord = (id: string, result: 'win' | 'lose'): BattleRecord => ({
+      id: `battle_${id}`,
+      opponent: '对手1',
+      result,
+      spell: '除你武器',
+      accuracy: 90,
+      wpm: 55,
+      date: new Date().toISOString(),
+    });
+
+    // 添加三连胜
+    addBattleRecord(createBattleRecord('1', 'win'));
+    addBattleRecord(createBattleRecord('2', 'win'));
+    addBattleRecord(createBattleRecord('3', 'win'));
+
+    let userData = loadUserData();
+    expect(userData.currentWinStreak).toBe(3);
+    expect(userData.bestWinStreak).toBe(3);
+
+    // 添加一次失败
+    addBattleRecord(createBattleRecord('4', 'lose'));
+
+    userData = loadUserData();
+    expect(userData.currentWinStreak).toBe(0);
+    expect(userData.bestWinStreak).toBe(3);
+
+    // 添加五连胜
+    addBattleRecord(createBattleRecord('5', 'win'));
+    addBattleRecord(createBattleRecord('6', 'win'));
+    addBattleRecord(createBattleRecord('7', 'win'));
+    addBattleRecord(createBattleRecord('8', 'win'));
+    addBattleRecord(createBattleRecord('9', 'win'));
+
+    userData = loadUserData();
+    expect(userData.currentWinStreak).toBe(5);
+    expect(userData.bestWinStreak).toBe(5);
   });
 
   test('unlockAchievement adds new achievement', () => {

@@ -25,12 +25,19 @@ describe('Achievement Checker', () => {
       achievements: [],
       unlockedSpells: [],
       practiceHistory: [],
+      battleHistory: [],
+      currentWinStreak: 0,
+      bestWinStreak: 0,
       stats: {
         totalPracticeTime: 0,
         totalPracticeCount: 0,
         averageAccuracy: 0,
         averageWpm: 0,
         bestWpm: 0,
+        totalBattles: 0,
+        totalWins: 0,
+        totalLosses: 0,
+        winRate: 0,
       },
       createdAt: new Date().toISOString(),
       lastLoginAt: new Date().toISOString(),
@@ -53,6 +60,21 @@ describe('Achievement Checker', () => {
     expect(mockUnlockCallback).toHaveBeenCalledWith(1); // 初次施法
     expect(mockUnlockCallback).toHaveBeenCalledWith(2); // 速度之星
     expect(mockUnlockCallback).toHaveBeenCalledWith(3); // 完美施法
+  });
+
+  test('checkPracticeAchievements unlocks practice time achievement', () => {
+    mockUserData.stats.totalPracticeTime = 36000; // 10小时
+    const practiceRecord: PracticeRecord = {
+      spell: '测试咒语',
+      accuracy: 90,
+      wpm: 45,
+      date: new Date().toISOString(),
+    };
+
+    checkPracticeAchievements(mockUserData, practiceRecord, mockUnlockCallback);
+
+    // 应该解锁：练习达人
+    expect(mockUnlockCallback).toHaveBeenCalledWith(7);
   });
 
   test('checkLevelAchievements unlocks level-based achievements', () => {
@@ -80,14 +102,31 @@ describe('Achievement Checker', () => {
   });
 
   test('checkBattleAchievements unlocks battle-based achievements', () => {
-    // TODO: 实现战斗相关成就的测试
+    mockUserData.stats.totalWins = 10;
+    mockUserData.bestWinStreak = 5;
+
     checkBattleAchievements(mockUserData, true, mockUnlockCallback);
+
+    // 应该解锁：决斗高手、连胜王者
+    expect(mockUnlockCallback).toHaveBeenCalledWith(4);
+    expect(mockUnlockCallback).toHaveBeenCalledWith(9);
+  });
+
+  test('checkBattleAchievements does not unlock achievements on loss', () => {
+    mockUserData.stats.totalWins = 10;
+    mockUserData.bestWinStreak = 5;
+
+    checkBattleAchievements(mockUserData, false, mockUnlockCallback);
+
+    // 不应该解锁任何成就
     expect(mockUnlockCallback).not.toHaveBeenCalled();
   });
 
   test('checkAchievements checks all achievements', () => {
     mockUserData.level = 5;
     mockUserData.stats.bestWpm = 55;
+    mockUserData.stats.totalWins = 10;
+    mockUserData.bestWinStreak = 5;
     mockUserData.practiceHistory = [{
       spell: '测试咒语',
       accuracy: 100,
@@ -97,10 +136,12 @@ describe('Achievement Checker', () => {
 
     checkAchievements(mockUserData, mockUnlockCallback);
 
-    // 应该解锁：初次施法、速度之星、完美施法、魔法学徒
+    // 应该解锁：初次施法、速度之星、完美施法、决斗高手、魔法学徒、连胜王者
     expect(mockUnlockCallback).toHaveBeenCalledWith(1);
     expect(mockUnlockCallback).toHaveBeenCalledWith(2);
     expect(mockUnlockCallback).toHaveBeenCalledWith(3);
+    expect(mockUnlockCallback).toHaveBeenCalledWith(4);
     expect(mockUnlockCallback).toHaveBeenCalledWith(5);
+    expect(mockUnlockCallback).toHaveBeenCalledWith(9);
   });
 }); 

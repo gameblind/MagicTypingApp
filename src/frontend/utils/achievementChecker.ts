@@ -28,7 +28,7 @@ const shouldUnlockAchievement = (achievementId: number, userData: UserData): boo
       return userData.practiceHistory.some(record => record.accuracy === 100);
 
     case 4: // 决斗高手
-      return countBattleWins(userData) >= 10;
+      return userData.stats.totalWins >= 10;
 
     case 5: // 魔法学徒
       return userData.level >= 5;
@@ -43,7 +43,7 @@ const shouldUnlockAchievement = (achievementId: number, userData: UserData): boo
       return userData.stats.averageAccuracy >= 95;
 
     case 9: // 连胜王者
-      return hasWinningStreak(userData, 5);
+      return userData.bestWinStreak >= 5;
 
     case 10: // 咒语收藏家
       return userData.unlockedSpells.every(spell => spell.mastery >= 80);
@@ -51,18 +51,6 @@ const shouldUnlockAchievement = (achievementId: number, userData: UserData): boo
     default:
       return false;
   }
-};
-
-// 计算决斗胜利次数
-const countBattleWins = (userData: UserData): number => {
-  // TODO: 实现决斗胜利次数统计
-  return 0;
-};
-
-// 检查是否有连胜
-const hasWinningStreak = (userData: UserData, streakCount: number): boolean => {
-  // TODO: 实现连胜检查
-  return false;
 };
 
 // 在练习结束时检查成就
@@ -89,6 +77,11 @@ export const checkPracticeAchievements = (
   // 精准施法
   if (userData.stats.averageAccuracy >= 95) {
     unlockCallback(8);
+  }
+
+  // 练习达人
+  if (userData.stats.totalPracticeTime >= 36000) {
+    unlockCallback(7);
   }
 };
 
@@ -127,12 +120,12 @@ export const checkBattleAchievements = (
 ) => {
   if (isWin) {
     // 决斗高手
-    if (countBattleWins(userData) >= 10) {
+    if (userData.stats.totalWins >= 10) {
       unlockCallback(4);
     }
 
     // 连胜王者
-    if (hasWinningStreak(userData, 5)) {
+    if (userData.bestWinStreak >= 5) {
       unlockCallback(9);
     }
   }

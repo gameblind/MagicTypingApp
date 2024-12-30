@@ -1,4 +1,4 @@
-import { UserData, Achievement, SpellProgress, PracticeRecord } from '../types/user';
+import { UserData, Achievement, SpellProgress, PracticeRecord, BattleRecord } from '../types/user';
 
 const STORAGE_KEY = 'harry_typing_user_data';
 
@@ -16,12 +16,19 @@ const defaultUserData: UserData = {
   achievements: [],
   unlockedSpells: [],
   practiceHistory: [],
+  battleHistory: [],
+  currentWinStreak: 0,
+  bestWinStreak: 0,
   stats: {
     totalPracticeTime: 0,
     totalPracticeCount: 0,
     averageAccuracy: 0,
     averageWpm: 0,
     bestWpm: 0,
+    totalBattles: 0,
+    totalWins: 0,
+    totalLosses: 0,
+    winRate: 0,
   },
   createdAt: new Date().toISOString(),
   lastLoginAt: new Date().toISOString(),
@@ -77,6 +84,29 @@ export const addPracticeRecord = (record: PracticeRecord): void => {
     stats.totalPracticeCount
   );
   stats.bestWpm = Math.max(stats.bestWpm, record.wpm);
+
+  saveUserData(userData);
+};
+
+// 添加战斗记录
+export const addBattleRecord = (record: BattleRecord): void => {
+  const userData = loadUserData();
+  userData.battleHistory.unshift(record);
+  
+  // 更新统计数据
+  const stats = userData.stats;
+  stats.totalBattles += 1;
+  
+  if (record.result === 'win') {
+    stats.totalWins += 1;
+    userData.currentWinStreak += 1;
+    userData.bestWinStreak = Math.max(userData.bestWinStreak, userData.currentWinStreak);
+  } else {
+    stats.totalLosses += 1;
+    userData.currentWinStreak = 0;
+  }
+  
+  stats.winRate = (stats.totalWins / stats.totalBattles) * 100;
 
   saveUserData(userData);
 };
