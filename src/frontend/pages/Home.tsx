@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -6,166 +7,190 @@ import {
   Paper,
   Button,
   Grid,
+  Card,
+  CardContent,
+  CardActions,
 } from '@mui/material';
 import {
-  Keyboard as KeyboardIcon,
+  PlayArrow as PlayIcon,
   EmojiEvents as TrophyIcon,
-  Timeline as ProgressIcon,
-  School as AcademyIcon,
+  Timeline as StatsIcon,
+  SportsKabaddi as BattleIcon,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
-  const features = [
-    {
-      title: "趣味练习",
-      description: "通过哈利波特魔法世界场景，让打字练习变得有趣",
-      icon: <KeyboardIcon sx={{ fontSize: 40, color: '#9c27b0' }} />,
-      color: 'rgba(156, 39, 176, 0.1)',
-      path: '/practice'
-    },
-    {
-      title: "成就系统",
-      description: "完成任务获得成就，解锁新的魔法咒语和角色",
-      icon: <TrophyIcon sx={{ fontSize: 40, color: '#ffc107' }} />,
-      color: 'rgba(255, 193, 7, 0.1)',
-      path: '/achievements'
-    },
-    {
-      title: "进度追踪",
-      description: "实时记录练习数据，直观展示进步轨迹",
-      icon: <ProgressIcon sx={{ fontSize: 40, color: '#4caf50' }} />,
-      color: 'rgba(76, 175, 80, 0.1)',
-      path: '/statistics'
-    },
-    {
-      title: "魔法学院",
-      description: "从新手魔法师到魔法大师的进阶之路",
-      icon: <AcademyIcon sx={{ fontSize: 40, color: '#f44336' }} />,
-      color: 'rgba(244, 67, 54, 0.1)',
-      path: '/profile'
-    }
+  // 模拟最近练习数据
+  const recentPractices = [
+    { spell: '除你武器', accuracy: 95, wpm: 45, date: '2023-12-30' },
+    { spell: '昏昏倒地', accuracy: 88, wpm: 42, date: '2023-12-29' },
+    { spell: '盔甲护身', accuracy: 92, wpm: 40, date: '2023-12-28' },
   ];
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/assets/images/hogwarts-bg.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        pt: 8,
-        pb: 6,
-      }}
-    >
+    <Box sx={{
+      minHeight: '100vh',
+      py: 4,
+      px: 2,
+    }}>
       <Container maxWidth="lg">
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography
-            component="h1"
-            variant="h2"
-            sx={{
-              color: '#9c27b0',
-              fontFamily: '"Harry Potter", fantasy',
-              textShadow: '0 0 20px rgba(156, 39, 176, 0.5)',
-              mb: 2,
-            }}
-          >
-            欢迎来到哈利波特打字冒险
+        {/* 欢迎区域 */}
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            mb: 4,
+            backgroundColor: 'rgba(20, 20, 28, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '12px',
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="h3" component="h1" sx={{ color: '#ffd700', mb: 2 }}>
+            欢迎来到霍格沃茨打字学院
           </Typography>
-          <Typography
-            variant="h5"
-            sx={{
-              color: 'rgba(255, 255, 255, 0.9)',
-              mb: 4,
-              fontWeight: 300,
-            }}
-          >
-            在魔法世界中提升你的打字技能
+          <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 4 }}>
+            通过打字练习掌握魔法咒语，成为最优秀的巫师
           </Typography>
-        </Box>
-
-        <Grid container spacing={4} justifyContent="center">
-          {features.map((feature) => (
-            <Grid item xs={12} sm={6} md={3} key={feature.title}>
-              <Paper
-                elevation={3}
-                sx={{
-                  p: 3,
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  backgroundColor: 'rgba(20, 20, 28, 0.8)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  transition: 'transform 0.3s ease-in-out',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                  },
-                }}
-                onClick={() => navigate(feature.path)}
-              >
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: '50%',
-                    backgroundColor: feature.color,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mb: 2,
-                  }}
-                >
-                  {feature.icon}
-                </Box>
-                <Typography
-                  variant="h5"
-                  component="h2"
-                  sx={{
-                    color: '#fff',
-                    mb: 2,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {feature.title}
-                </Typography>
-                <Typography
-                  sx={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    flex: 1,
-                  }}
-                >
-                  {feature.description}
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Box sx={{ textAlign: 'center', mt: 8 }}>
           <Button
             variant="contained"
             size="large"
+            startIcon={<PlayIcon />}
             onClick={() => navigate('/practice')}
             sx={{
-              backgroundColor: '#9c27b0',
-              color: 'white',
-              px: 6,
-              py: 2,
-              fontSize: '1.2rem',
+              backgroundColor: '#ffd700',
+              color: '#14141C',
               '&:hover': {
-                backgroundColor: '#7b1fa2',
+                backgroundColor: '#ffed4a',
               },
+              px: 4,
+              py: 1.5,
             }}
           >
             开始练习
           </Button>
-        </Box>
+        </Paper>
+
+        {/* 功能卡片 */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={4}>
+            <Card sx={{
+              backgroundColor: 'rgba(20, 20, 28, 0.7)',
+              backdropFilter: 'blur(10px)',
+              height: '100%',
+            }}>
+              <CardContent>
+                <Box sx={{ color: '#ffd700', mb: 2 }}>
+                  <TrophyIcon sx={{ fontSize: 40 }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: '#ffd700', mb: 1 }}>
+                  每日目标
+                </Typography>
+                <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                  完成今日练习目标，获得特殊奖励
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small" sx={{ color: '#ffd700' }}>查看详情</Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Card sx={{
+              backgroundColor: 'rgba(20, 20, 28, 0.7)',
+              backdropFilter: 'blur(10px)',
+              height: '100%',
+            }}>
+              <CardContent>
+                <Box sx={{ color: '#ffd700', mb: 2 }}>
+                  <BattleIcon sx={{ fontSize: 40 }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: '#ffd700', mb: 1 }}>
+                  魔法对决
+                </Typography>
+                <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                  通过打字施放魔法，击败你的对手
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button 
+                  size="small" 
+                  sx={{ color: '#ffd700' }}
+                  onClick={() => navigate('/battle')}
+                >
+                  开始对决
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Card sx={{
+              backgroundColor: 'rgba(20, 20, 28, 0.7)',
+              backdropFilter: 'blur(10px)',
+              height: '100%',
+            }}>
+              <CardContent>
+                <Box sx={{ color: '#ffd700', mb: 2 }}>
+                  <StatsIcon sx={{ fontSize: 40 }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: '#ffd700', mb: 1 }}>
+                  进度统计
+                </Typography>
+                <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                  查看你的练习数据和进步趋势
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button 
+                  size="small" 
+                  sx={{ color: '#ffd700' }}
+                  onClick={() => navigate('/statistics')}
+                >
+                  查看统计
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* 最近练习记录 */}
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            backgroundColor: 'rgba(20, 20, 28, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '12px',
+          }}
+        >
+          <Typography variant="h6" sx={{ color: '#ffd700', mb: 3 }}>
+            最近练习记录
+          </Typography>
+          <Grid container spacing={2}>
+            {recentPractices.map((practice, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Paper sx={{
+                  p: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                }}>
+                  <Typography variant="h6" sx={{ color: '#ffd700' }}>
+                    {practice.spell}
+                  </Typography>
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    准确率: {practice.accuracy}%
+                  </Typography>
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    速度: {practice.wpm} WPM
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+                    {practice.date}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
       </Container>
     </Box>
   );
