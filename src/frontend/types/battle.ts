@@ -1,39 +1,26 @@
-export type BattleStatus = 
-  | 'playerTurn'   // 玩家回合
-  | 'enemyTurn'    // 敌人回合
-  | 'casting'      // 施法中
-  | 'hit'          // 命中
-  | 'victory'      // 胜利
-  | 'defeat';      // 失败
+export interface SpellEffect {
+  name: string;
+  color: string;
+  animation: string;
+  sound: string;
+}
+
+export interface Spell {
+  name: string;
+  damage: number;
+  mpCost: number;
+  description: string;
+  effect: SpellEffect;
+}
 
 export interface Character {
   name: string;
   image: string;
   maxHp: number;
-  currentHp: number;
+  hp: number;
   maxMp: number;
-  currentMp: number;
+  mp: number;
 }
 
-export interface SpellEffect {
-  damage: number;
-  mpCost: number;
-  sound?: string;
-  animation?: string;
-}
-
-export interface BattleState {
-  status: BattleStatus;
-  effectActive: boolean;
-  lastDamage: number | null;
-  turn: number;
-  lastSpell: string | null;
-  isCritical: boolean;
-}
-
-export interface SpellCastResult {
-  damage: number;
-  mpCost: number;
-  isCritical: boolean;
-  effect: SpellEffect;
-} 
+export type BattleStatus = 'ongoing' | 'victory' | 'defeat';
+export type TurnPhase = 'player' | 'enemy'; 

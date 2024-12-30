@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { SPELLS } from '../data/spells';
-import { Character, BattleState } from '../types/battle';
+import { SPELLS } from '../utils/spells';
+import { Character, Spell } from '../types/battle';
 
 interface BattleFieldProps {
   player: Character;
   enemy: Character;
-  battleState: BattleState;
-  onSpellCast: (spell: string) => void;
+  isGameOver: boolean;
+  isPlayerTurn: boolean;
+  onSpellCast: (spell: Spell) => void;
 }
 
 const BattleField: React.FC<BattleFieldProps> = ({
   player,
   enemy,
-  battleState,
+  isGameOver,
+  isPlayerTurn,
   onSpellCast
 }) => {
   const [input, setInput] = useState('');
@@ -22,23 +24,19 @@ const BattleField: React.FC<BattleFieldProps> = ({
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (newValue.length > input.length) {
-      setInput(input + newValue.slice(-1));
-    } else {
-      setInput(newValue);
-    }
+    const newValue = e.target.value.toLowerCase();
+    setInput(newValue);
     setIsInputError(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !battleState.effectActive) {
+    if (e.key === 'Enter' && !isGameOver) {
       const spell = SPELLS[input.toLowerCase()];
-      if (!spell || player.currentMp < spell.mpCost) {
+      if (!spell || player.mp < spell.mpCost) {
         setIsInputError(true);
         return;
       }
-      onSpellCast(input);
+      onSpellCast(spell);
       setInput('');
     }
   };
@@ -81,7 +79,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
         <Box sx={{ mb: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', color: '#ff4444', mb: 0.5 }}>
             <span>HP</span>
-            <span>{player.currentHp}/{player.maxHp}</span>
+            <span>{player.hp}/{player.maxHp}</span>
           </Box>
           <Box sx={{
             height: 8,
@@ -89,7 +87,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
             borderRadius: 4,
           }}>
             <Box sx={{
-              width: `${(player.currentHp / player.maxHp) * 100}%`,
+              width: `${(player.hp / player.maxHp) * 100}%`,
               height: '100%',
               backgroundColor: '#ff4444',
               borderRadius: 4,
@@ -101,7 +99,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
         <Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', color: '#4dabf5', mb: 0.5 }}>
             <span>MP</span>
-            <span>{player.currentMp}/{player.maxMp}</span>
+            <span>{player.mp}/{player.maxMp}</span>
           </Box>
           <Box sx={{
             height: 8,
@@ -109,7 +107,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
             borderRadius: 4,
           }}>
             <Box sx={{
-              width: `${(player.currentMp / player.maxMp) * 100}%`,
+              width: `${(player.mp / player.maxMp) * 100}%`,
               height: '100%',
               backgroundColor: '#4dabf5',
               borderRadius: 4,
@@ -147,7 +145,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
         <Box sx={{ mb: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', color: '#ff4444', mb: 0.5 }}>
             <span>HP</span>
-            <span>{enemy.currentHp}/{enemy.maxHp}</span>
+            <span>{enemy.hp}/{enemy.maxHp}</span>
           </Box>
           <Box sx={{
             height: 8,
@@ -155,7 +153,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
             borderRadius: 4,
           }}>
             <Box sx={{
-              width: `${(enemy.currentHp / enemy.maxHp) * 100}%`,
+              width: `${(enemy.hp / enemy.maxHp) * 100}%`,
               height: '100%',
               backgroundColor: '#ff4444',
               borderRadius: 4,
@@ -167,7 +165,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
         <Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', color: '#4dabf5', mb: 0.5 }}>
             <span>MP</span>
-            <span>{enemy.currentMp}/{enemy.maxMp}</span>
+            <span>{enemy.mp}/{enemy.maxMp}</span>
           </Box>
           <Box sx={{
             height: 8,
@@ -175,7 +173,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
             borderRadius: 4,
           }}>
             <Box sx={{
-              width: `${(enemy.currentMp / enemy.maxMp) * 100}%`,
+              width: `${(enemy.mp / enemy.maxMp) * 100}%`,
               height: '100%',
               backgroundColor: '#4dabf5',
               borderRadius: 4,
@@ -240,27 +238,6 @@ const BattleField: React.FC<BattleFieldProps> = ({
         </Box>
       </Box>
 
-      {/* 伤害数字 */}
-      {battleState.lastDamage && (
-        <Box sx={{
-          position: 'absolute',
-          top: '40%',
-          right: '35%',
-          color: '#ff4444',
-          fontSize: '48px',
-          fontWeight: 'bold',
-          textShadow: '0 0 10px rgba(255, 0, 0, 0.5)',
-          animation: 'damage 0.5s ease-out',
-          '@keyframes damage': {
-            '0%': { opacity: 0, transform: 'translateY(0)' },
-            '50%': { opacity: 1, transform: 'translateY(-20px)' },
-            '100%': { opacity: 0, transform: 'translateY(-40px)' },
-          },
-        }}>
-          -{battleState.lastDamage}
-        </Box>
-      )}
-
       {/* 底部控制区域 */}
       <Box sx={{
         position: 'absolute',
@@ -278,10 +255,8 @@ const BattleField: React.FC<BattleFieldProps> = ({
           textAlign: 'center',
           mb: 2,
         }}>
-          {battleState.status === 'playerTurn' ? '你的回合！' :
-           battleState.status === 'enemyTurn' ? '敌人回合！' :
-           battleState.status === 'casting' ? '施法中...' :
-           battleState.status === 'hit' ? '命中！' : '准备战斗！'}
+          {isGameOver ? (enemy.hp <= 0 ? '胜利！' : '失败！') :
+           isPlayerTurn ? '你的回合！' : '敌人回合！'}
         </Box>
 
         {/* 输入框 */}
@@ -294,7 +269,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
             value={input}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
-            disabled={battleState.effectActive || battleState.status === 'enemyTurn'}
+            disabled={!isPlayerTurn || isGameOver}
             placeholder="输入咒语..."
             style={{
               width: '100%',
@@ -306,6 +281,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
               fontSize: '24px',
               textAlign: 'center',
               outline: 'none',
+              opacity: (!isPlayerTurn || isGameOver) ? 0.5 : 1,
             }}
           />
         </Box>
@@ -316,27 +292,28 @@ const BattleField: React.FC<BattleFieldProps> = ({
           flexWrap: 'wrap',
           gap: '10px',
           justifyContent: 'center',
+          opacity: (!isPlayerTurn || isGameOver) ? 0.5 : 1,
         }}>
           {Object.entries(SPELLS).map(([key, spell]) => (
             <Box
               key={key}
               onClick={() => {
-                if (player.currentMp >= spell.mpCost) {
-                  onSpellCast(key);
+                if (player.mp >= spell.mpCost && isPlayerTurn && !isGameOver) {
+                  onSpellCast(spell);
                 }
               }}
               sx={{
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                border: `1px solid ${player.currentMp >= spell.mpCost ? '#FFD700' : '#666'}`,
+                border: `1px solid ${player.mp >= spell.mpCost ? '#FFD700' : '#666'}`,
                 borderRadius: '5px',
                 padding: '8px 16px',
                 color: '#fff',
                 fontSize: '14px',
-                cursor: player.currentMp >= spell.mpCost ? 'pointer' : 'not-allowed',
+                cursor: player.mp >= spell.mpCost && isPlayerTurn && !isGameOver ? 'pointer' : 'not-allowed',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                '&:hover': player.currentMp >= spell.mpCost ? {
+                '&:hover': player.mp >= spell.mpCost && isPlayerTurn && !isGameOver ? {
                   backgroundColor: 'rgba(0, 0, 0, 0.9)',
                   transform: 'translateY(-2px)',
                 } : {},
@@ -350,29 +327,27 @@ const BattleField: React.FC<BattleFieldProps> = ({
         </Box>
       </Box>
 
-      {/* 结束提示 */}
-      {(battleState.status === 'victory' || battleState.status === 'defeat') && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
-            padding: '40px',
-            borderRadius: '20px',
-            textAlign: 'center',
-            border: `3px solid ${battleState.status === 'victory' ? '#4caf50' : '#ff4444'}`,
-            zIndex: 1000,
-          }}
-        >
+      {/* 游戏结束提示 */}
+      {isGameOver && (
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          padding: '40px',
+          borderRadius: '20px',
+          textAlign: 'center',
+          border: `3px solid ${enemy.hp <= 0 ? '#4caf50' : '#ff4444'}`,
+          zIndex: 1000,
+        }}>
           <Box sx={{
             fontSize: '36px',
             fontWeight: 'bold',
-            color: battleState.status === 'victory' ? '#4caf50' : '#ff4444',
+            color: enemy.hp <= 0 ? '#4caf50' : '#ff4444',
             mb: 3,
           }}>
-            {battleState.status === 'victory' ? '胜利！' : '失败！'}
+            {enemy.hp <= 0 ? '胜利！' : '失败！'}
           </Box>
           <Box sx={{
             display: 'flex',

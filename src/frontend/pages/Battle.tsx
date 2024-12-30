@@ -8,35 +8,35 @@ const PLAYER_INIT = {
   name: '哈利·波特',
   image: '/assets/images/harry.png',
   maxHp: 100,
-  currentHp: 100,
+  hp: 100,
   maxMp: 100,
-  currentMp: 100,
+  mp: 100,
 };
 
 const ENEMY_INIT = {
   name: '伏地魔',
   image: '/assets/images/voldemort.png',
   maxHp: 100,
-  currentHp: 100,
+  hp: 100,
   maxMp: 100,
-  currentMp: 100,
+  mp: 100,
 };
 
 const Battle: React.FC = () => {
   const navigate = useNavigate();
-  const { player, enemy, battleState, onSpellCast } = useBattle(PLAYER_INIT, ENEMY_INIT);
+  const { player, enemy, isGameOver, isPlayerTurn, castSpell } = useBattle(PLAYER_INIT, ENEMY_INIT);
 
   // 监听Enter键重新开始游戏
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && (battleState.status === 'victory' || battleState.status === 'defeat')) {
+      if (e.key === 'Enter' && isGameOver) {
         window.location.reload();
       }
     };
 
     window.addEventListener('keypress', handleKeyPress);
     return () => window.removeEventListener('keypress', handleKeyPress);
-  }, [battleState.status]);
+  }, [isGameOver]);
 
   return (
     <Box sx={{
@@ -51,8 +51,9 @@ const Battle: React.FC = () => {
       <BattleField
         player={player}
         enemy={enemy}
-        battleState={battleState}
-        onSpellCast={onSpellCast}
+        isGameOver={isGameOver}
+        isPlayerTurn={isPlayerTurn}
+        onSpellCast={castSpell}
       />
     </Box>
   );
