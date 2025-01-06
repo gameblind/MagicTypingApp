@@ -1,106 +1,119 @@
-# 哈利波特打字冒险
+# Harry Potter Typing
 
-一款融合哈利波特魔法世界的趣味打字练习软件，帮助初学者提升打字技能。
+一个基于哈利波特魔法世界主题的打字练习软件。
 
 ## 功能特点
 
-- 🧙‍♂️ 个性化角色系统：创建你的魔法师角色，开启打字冒险
-- ⌨️ 实时虚拟键盘：直观的按键提示和反馈
-- 🎯 多样化练习模式：从基础到进阶的打字练习
-- ⚔️ 魔法对战系统：通过打字施放魔法咒语
-- 📊 进度追踪：详细的练习数据统计和分析
+- 🎯 分级练习：从新手入门到六年级的完整课程体系
+- ⚡ 即时反馈：实时显示打字速度和准确率
+- 📊 详细统计：追踪每个咒语的练习进度和表现
+- 💾 本地存储：使用 SQLite 数据库保存练习数据
+- 📱 离线使用：完全本地运行，无需网络连接
+- 🔄 数据备份：支持数据导出和恢复功能
 
 ## 技术栈
 
-### 前端
+- Electron
 - React + TypeScript
-- Material UI
-- Recharts (图表库)
-- Electron (桌面应用)
+- SQLite3 数据库
+- Material-UI 组件库
 
-### 后端
-- Python Flask
-- SQLite (数据存储)
+## 开发环境设置
 
-## 开发环境要求
-
-- Node.js 16+
-- Python 3.8+
-- npm 或 yarn
-
-## 安装步骤
-
-1. 克隆仓库
+1. 克隆仓库：
 ```bash
 git clone https://github.com/yourusername/harry-typing.git
 cd harry-typing
 ```
 
-2. 安装前端依赖
+2. 安装依赖：
 ```bash
 npm install
 ```
 
-3. 安装后端依赖
+3. 运行开发服务器：
 ```bash
-pip install -r requirements.txt
-```
-
-4. 启动应用
-```bash
-# 使用启动脚本同时启动前端和后端
-./start.sh
-
-# 或分别启动
-# 后端
-python src/backend/app.py
-
-# 前端
 npm run dev
 ```
 
-## 项目结构
+## 数据存储
 
-```
-harry-typing/
-├── src/
-│   ├── frontend/        # React前端代码
-│   │   ├── components/  # 可复用组件
-│   │   ├── pages/      # 页面组件
-│   │   ├── styles/     # 样式文件
-│   │   └── utils/      # 工具函数
-│   ├── backend/        # Flask后端代码
-│   │   ├── models/     # 数据模型
-│   │   ├── controllers/# 控制器
-│   │   └── utils/      # 工具函数
-│   ├── electron/       # Electron主进程
-│   └── assets/         # 静态资源
-│       ├── audio/      # 音效文件
-│       └── images/     # 图片资源
-├── data/               # 本地数据存储
-├── requirements.txt    # Python依赖
-└── package.json       # Node.js依赖
-```
+应用使用 SQLite 数据库存储用户数据，包括：
+- 练习记录
+- 咒语进度
+- 统计数据
+
+数据库文件位置：
+- Windows: `%APPDATA%/harry-typing/typing.db`
+- macOS: `~/Library/Application Support/harry-typing/typing.db`
+- Linux: `~/.config/harry-typing/typing.db`
+
+## 数据备份
+
+自动备份：
+- 应用每天自动创建数据备份
+- 备份存储在文档目录的 HarryTyping/backups 文件夹中
+
+手动备份：
+1. 点击设置中的"导出数据"
+2. 选择保存位置
+3. 系统将创建一个完整的数据库备份
+
+恢复备份：
+1. 点击设置中的"导入数据"
+2. 选择备份文件
+3. 系统将恢复所选备份的数据
 
 ## 开发指南
 
-### 前端开发
-- 使用 TypeScript 进行开发
-- 遵循 React 函数式组件和 Hooks 的最佳实践
-- 使用 Material UI 组件库保持界面一致性
-- 使用 ESLint 和 Prettier 保持代码风格
+### 数据库操作
 
-### 后端开发
-- 遵循 RESTful API 设计规范
-- 使用 Python Type Hints 进行类型注解
-- 使用 Black 和 Pylint 进行代码格式化和检查
+```typescript
+// 示例：添加练习记录
+await db.savePracticeRecord({
+  spellName: "Lumos",
+  duration: 120,
+  totalChars: 100,
+  correctChars: 95,
+  speed: 45,
+  completed: true
+});
+
+// 示例：获取统计数据
+const stats = await db.getStatistics();
+```
+
+### 添加新咒语
+
+1. 在 `src/data/spells.ts` 中添加咒语信息
+2. 更新数据库模式（如需要）
+3. 添加相应的测试用例
+
+## 测试
+
+运行测试：
+```bash
+npm test
+```
+
+运行特定测试：
+```bash
+npm test -- -t "spell statistics"
+```
+
+## 构建
+
+构建生产版本：
+```bash
+npm run build
+```
 
 ## 贡献指南
 
 1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
+2. 创建特性分支
+3. 提交更改
+4. 推送到分支
 5. 创建 Pull Request
 
 ## 许可证

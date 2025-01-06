@@ -7,19 +7,28 @@ export interface SpellEffect {
 
 export interface Spell {
   name: string;
-  damage: number;
+  text: string;
   mpCost: number;
-  description: string;
-  effect: SpellEffect;
+  damage: number;
+  effect?: string;
 }
 
 export interface Character {
   name: string;
   image: string;
   maxHp: number;
-  hp: number;
+  currentHp: number;
   maxMp: number;
-  mp: number;
+  currentMp: number;
+}
+
+export interface BattleState {
+  player: Character;
+  enemy: Character;
+  currentSpell: Spell | null;
+  isPlayerTurn: boolean;
+  battleLog: string[];
+  isGameOver: boolean;
 }
 
 export type BattleStatus = 'ongoing' | 'victory' | 'defeat';
