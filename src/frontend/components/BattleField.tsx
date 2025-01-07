@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { SPELLS } from '../utils/spells';
 import { Character, Spell } from '../types/battle';
+import SpellEffect from './SpellEffect';
+import { playSpellSound, playHitSound, playSpellCastSound } from '../utils/audio';
 
 interface BattleFieldProps {
   player: Character;
@@ -10,6 +12,7 @@ interface BattleFieldProps {
   isGameOver: boolean;
   isPlayerTurn: boolean;
   onSpellCast: (spell: Spell) => void;
+  onEnemyTurn?: (spell: Spell) => void;
 }
 
 const BattleField: React.FC<BattleFieldProps> = ({
@@ -17,11 +20,14 @@ const BattleField: React.FC<BattleFieldProps> = ({
   enemy,
   isGameOver,
   isPlayerTurn,
-  onSpellCast
+  onSpellCast,
+  onEnemyTurn
 }) => {
   const [input, setInput] = useState('');
   const [isInputError, setIsInputError] = useState(false);
   const navigate = useNavigate();
+  const spellInputRef = useRef<HTMLInputElement>(null);
+  const [activeSpell, setActiveSpell] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.toLowerCase();
@@ -29,16 +35,115 @@ const BattleField: React.FC<BattleFieldProps> = ({
     setIsInputError(false);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !isGameOver) {
       const spell = SPELLS[input.toLowerCase()];
       if (!spell || player.mp < spell.mpCost) {
         setIsInputError(true);
         return;
       }
-      onSpellCast(spell);
+      await handleSpellCast(spell);
       setInput('');
     }
+  };
+
+  const handleSpellCast = (spell: Spell) => {
+    console.log('玩家施放法术:', spell.name, '魔法消耗:', spell.mpCost, '预期伤害:', spell.damage);
+    
+    // 返回一个 Promise，在特效完成后才解析
+    return new Promise<void>(resolve => {
+      playSpellSound(spell.name);
+      console.log('玩家施放法术音效');
+      
+      setActiveSpell(spell.name);
+      console.log('玩家施法特效开始');
+      
+      setTimeout(() => {
+        playHitSound();
+        console.log('玩家法术命中音效播放');
+      }, 800);
+      
+      setTimeout(() => {
+        setActiveSpell(null);
+        console.log('玩家施法特效结束');
+        resolve(); // 特效完成后解析 Promise
+      }, 1000);
+    }).then(() => {
+      // 特效完成后再切换回合
+      onSpellCast(spell);
+      console.log('玩家回合结束，通知游戏状态更新');
+    });
+  };
+
+  // 首次加载时激活输入框
+  useEffect(() => {
+    if (spellInputRef.current) {
+      spellInputRef.current.focus();
+    }
+  }, []);
+
+  // 当轮到玩家回合时激活输入框
+  useEffect(() => {
+    if (isPlayerTurn && spellInputRef.current) {
+      spellInputRef.current.focus();
+    }
+  }, [isPlayerTurn]);
+
+  // 处理敌人施法
+  useEffect(() => {
+    if (!isPlayerTurn && !isGameOver) {
+      console.log('开始敌人回合');
+      
+      // 从 SPELLS 中选择可用的咒语（基于MP消耗）
+      const availableSpells = Object.values(SPELLS).filter(spell => 
+        enemy.mp >= spell.mpCost
+      );
+      
+      if (availableSpells.length === 0) {
+        const defaultSpell = SPELLS.attack;
+        console.log('敌人MP不足，使用普通攻击');
+        handleEnemySpellCast(defaultSpell);
+        return;
+      }
+      
+      availableSpells.sort((a, b) => b.damage - a.damage);
+      const topSpells = availableSpells.slice(0, 3);
+      const randomSpell = topSpells[Math.floor(Math.random() * topSpells.length)];
+      
+      // 使用 setTimeout 避免重复触发
+      const timer = setTimeout(() => {
+        handleEnemySpellCast(randomSpell);
+      }, 0);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isPlayerTurn, isGameOver]);  // 这里的依赖项可能导致多次触发
+
+  // 处理敌人施法的具体逻辑
+  const handleEnemySpellCast = (spell: Spell) => {
+    console.log('敌人选择咒语:', spell.name, '魔法消耗:', spell.mpCost, '预期伤害:', spell.damage);
+    
+    playSpellSound(spell.name);
+    console.log('敌人施放法术音效');
+    
+    setActiveSpell(spell.name);
+    console.log('敌人施法特效开始');
+    
+    setTimeout(() => {
+      playHitSound();
+      console.log('敌人法术命中音效播放');
+    }, 800);
+    
+    setTimeout(() => {
+      setActiveSpell(null);
+      console.log('清理敌人特效完成');
+      
+      // 特效完成后再通知父组件切换回合，并传递咒语信息
+      if (onEnemyTurn) {
+        onEnemyTurn(spell);  // 传递咒语信息，以便父组件扣除 MP
+        console.log('敌人回合结束，通知游戏状态更新');
+      }
+    }, 1000);
   };
 
   return (
@@ -265,6 +370,7 @@ const BattleField: React.FC<BattleFieldProps> = ({
           mb: 2,
         }}>
           <input
+            ref={spellInputRef}
             type="text"
             value={input}
             onChange={handleInputChange}
@@ -297,9 +403,9 @@ const BattleField: React.FC<BattleFieldProps> = ({
           {Object.entries(SPELLS).map(([key, spell]) => (
             <Box
               key={key}
-              onClick={() => {
+              onClick={async () => {
                 if (player.mp >= spell.mpCost && isPlayerTurn && !isGameOver) {
-                  onSpellCast(spell);
+                  await handleSpellCast(spell);
                 }
               }}
               sx={{
@@ -386,6 +492,14 @@ const BattleField: React.FC<BattleFieldProps> = ({
             </Box>
           </Box>
         </Box>
+      )}
+
+      {/* 添加特效层 */}
+      {activeSpell && (
+        <SpellEffect 
+          spell={activeSpell}
+          isPlayerCasting={isPlayerTurn}
+        />
       )}
     </Box>
   );

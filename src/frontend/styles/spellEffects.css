@@ -1,0 +1,129 @@
+.spell-effect {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+}
+
+/* 基础魔法球效果 */
+.spell-effect::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FFD700, #FF6B00);
+  box-shadow: 
+    0 0 10px #FFD700,
+    0 0 20px #FF6B00,
+    0 0 30px #FF4500;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* 魔法轨迹效果 */
+.spell-effect::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #FFD700, transparent);
+  filter: blur(8px);
+}
+
+/* 从右向左的动画（玩家施法） */
+.cast-left {
+  animation: cast-left 0.8s ease-out forwards;
+  right: 200px; /* 从右侧开始 */
+}
+
+.cast-left::after {
+  transform: scaleX(-4);
+}
+
+/* 从左向右的动画（敌人施法） */
+.cast-right {
+  animation: cast-right 0.8s ease-out forwards;
+  left: 200px; /* 从左侧开始 */
+}
+
+.cast-right::after {
+  transform: scaleX(4);
+}
+
+@keyframes cast-left {
+  0% { 
+    transform: translate(0, -50%) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    transform: translate(-200px, -50%) scale(1);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(-800px, -50%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes cast-right {
+  0% { 
+    transform: translate(0, -50%) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    transform: translate(200px, -50%) scale(1);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(800px, -50%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 不同咒语的颜色变体 */
+.spell-effect.stupefy::before {
+  background: radial-gradient(circle, #FF0000, #8B0000);
+  box-shadow: 
+    0 0 10px #FF0000,
+    0 0 20px #8B0000,
+    0 0 30px #660000;
+}
+
+.spell-effect.expelliarmus::before {
+  background: radial-gradient(circle, #00FF00, #006400);
+  box-shadow: 
+    0 0 10px #00FF00,
+    0 0 20px #006400,
+    0 0 30px #004000;
+}
+
+.spell-effect.protego::before {
+  background: radial-gradient(circle, #4169E1, #000080);
+  box-shadow: 
+    0 0 10px #4169E1,
+    0 0 20px #000080,
+    0 0 30px #00008B;
+} 

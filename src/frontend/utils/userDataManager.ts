@@ -1,4 +1,5 @@
 import { UserData, Achievement, SpellProgress, PracticeRecord, BattleRecord } from '../types/user';
+import { PracticeRecord } from '../types/practice';
 
 const STORAGE_KEY = 'harry_typing_user_data';
 
@@ -179,4 +180,47 @@ const getTitleForLevel = (level: number): string => {
   if (level < 15) return '魔法师';
   if (level < 20) return '高级魔法师';
   return '魔法大师';
+};
+
+/**
+ * 添加练习记录
+ * @param record 练习记录
+ */
+export const addPractice = (record: PracticeRecord) => {
+  // 获取现有记录
+  const practices = JSON.parse(localStorage.getItem('practices') || '[]');
+  
+  // 添加新记录
+  practices.push(record);
+  
+  // 保存到本地存储
+  localStorage.setItem('practices', JSON.stringify(practices));
+};
+
+/**
+ * 检查练习成就
+ * @param userData 用户数据
+ * @param record 练习记录
+ * @param unlockAchievement 解锁成就的回调函数
+ */
+export const checkPracticeAchievements = (
+  userData: UserData,
+  record: PracticeRecord,
+  unlockAchievement: (achievementId: string) => void
+) => {
+  // 获取所有练习记录
+  const practices = JSON.parse(localStorage.getItem('practices') || '[]');
+  
+  // 检查各种成就条件
+  if (record.accuracy === 100 && !userData.achievements.includes('perfect_spell')) {
+    unlockAchievement('perfect_spell');
+  }
+  
+  if (record.wpm >= 60 && !userData.achievements.includes('speed_wizard')) {
+    unlockAchievement('speed_wizard');
+  }
+  
+  if (practices.length >= 100 && !userData.achievements.includes('practice_master')) {
+    unlockAchievement('practice_master');
+  }
 }; 

@@ -6,6 +6,7 @@ import { UserDataProvider } from './contexts/UserDataContext';
 import { StatisticsProvider } from './contexts/StatisticsContext';
 import theme from './theme';
 import Layout from './components/Layout';
+import './styles/spellEffects.css';
 
 const App: React.FC = () => {
   return (

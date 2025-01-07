@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -26,6 +27,11 @@ import {
 } from '@mui/icons-material';
 import VirtualKeyboard from '../components/VirtualKeyboard';
 import styled from '@emotion/styled';
+import { playSpellSound, playKeySound } from '../utils/audioPlayer';
+import { calculateAccuracy, calculateWPM } from '../utils/practiceUtils';
+import { addPractice, checkPracticeAchievements } from '../utils/userDataManager';
+import { PracticeRecord } from '../types/practice';
+import { useUserData } from '../hooks/useUserData';
 
 interface PracticeStats {
   currentSpeed: number;  // 当前速度
@@ -357,6 +363,8 @@ const TypingText = styled('div')({
 });
 
 const Practice: React.FC = () => {
+  const navigate = useNavigate();
+  const { userData, unlockAchievement } = useUserData();
   const [expandedGrade, setExpandedGrade] = useState<string | null>(courses[0].grade);
   const [currentGrade, setCurrentGrade] = useState(courses[0]);
   const [currentSpell, setCurrentSpell] = useState(courses[0].spells[0]);
@@ -377,50 +385,6 @@ const Practice: React.FC = () => {
     wrongChars: 0,
     totalChars: 0,
   });
-
-  // 添加音频对象
-  const [keyPressAudio] = useState(() => {
-    try {
-      return new Audio('/assets/audio/key_press.mp3');
-    } catch (error) {
-      console.warn('按键音效加载失败:', error);
-      return null;
-    }
-  });
-  
-  const [keyErrorAudio] = useState(() => {
-    try {
-      return new Audio('/assets/audio/key_error.mp3');
-    } catch (error) {
-      console.warn('错误音效加载失败:', error);
-      return null;
-    }
-  });
-
-  // 预加载音频
-  useEffect(() => {
-    if (keyPressAudio) {
-      keyPressAudio.load();
-    }
-    if (keyErrorAudio) {
-      keyErrorAudio.load();
-    }
-  }, [keyPressAudio, keyErrorAudio]);
-
-  // 播放音频的工具函数
-  const playSound = useCallback((isError: boolean) => {
-    try {
-      const audio = isError ? keyErrorAudio : keyPressAudio;
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(error => {
-          console.warn('音效播放失败:', error);
-        });
-      }
-    } catch (error) {
-      console.warn('播放音频失败:', error);
-    }
-  }, [keyPressAudio, keyErrorAudio]);
 
   const [showAchievement, setShowAchievement] = useState(false);
   const [achievementMessage, setAchievementMessage] = useState('');
@@ -497,31 +461,25 @@ const Practice: React.FC = () => {
   const updateStats = useCallback(() => {
     if (!startTime) return;
 
-    const timeElapsed = (Date.now() - startTime) / 60000; // 转换为分钟
-    if (timeElapsed < 0.016) return; // 如果时间少于1秒，不更新统计
+    // 计算当前速度
+    const timeElapsed = (Date.now() - startTime) / 1000 / 60; // 转换为分钟
+    const currentSpeed = Math.round((input.length / 5) / timeElapsed); // 假设每个单词平均5个字符
 
-    // 更准确的WPM计算方法
-    const correctChars = input.split('').filter((char, i) => char === currentSpell.latin[i]).length;
-    const currentSpeed = Math.round(correctChars / 5 / timeElapsed); // 每分钟正确的词数
+    // 计算准确率
+    const accuracy = calculateAccuracy(input, currentSpell.latin.slice(0, input.length));
 
-    const accuracy = Math.round((correctChars / input.length) * 100) || 100;
-    const maxSpeed = Math.max(stats.maxSpeed, currentSpeed);
-    
-    // 使用正确字符数加权计算平均速度
-    const totalCorrectChars = stats.correctChars + correctChars;
-    const weightedAvgSpeed = totalCorrectChars === 0 ? 0 : 
-      Math.round((stats.avgSpeed * stats.correctChars + currentSpeed * correctChars) / totalCorrectChars);
-    
+    // 更新统计
     setStats(prev => ({
+      ...prev,
       currentSpeed,
       accuracy,
-      maxSpeed,
-      avgSpeed: weightedAvgSpeed,
-      correctChars: totalCorrectChars,
-      wrongChars: input.length - correctChars,
-      totalChars: prev.totalChars + input.length,
+      maxSpeed: Math.max(prev.maxSpeed, currentSpeed),
+      avgSpeed: Math.round((prev.avgSpeed * prev.totalChars + currentSpeed) / (prev.totalChars + 1)),
+      correctChars: input.split('').filter((char, i) => char === currentSpell.latin[i]).length,
+      wrongChars: input.length - input.split('').filter((char, i) => char === currentSpell.latin[i]).length,
+      totalChars: input.length,
     }));
-  }, [input, startTime, currentSpell.latin, stats]);
+  }, [input, startTime, currentSpell.latin]);
 
   // 检查是否完成当前年级
   const checkGradeCompletion = useCallback(() => {
@@ -654,6 +612,38 @@ const Practice: React.FC = () => {
     }
   }, [currentGrade, currentSpell, courses, stats, initializePractice]);
 
+  const handleSpellCompletion = useCallback((spell: string, accuracy: number) => {
+    if (!startTime) return;
+    
+    if (accuracy === 100) {
+      // 播放咒语音频，使用中文名称，并在播放完成后执行后续操作
+      playSpellSound(currentSpell.spell, () => {
+        // 更新统计数据
+        const wpm = calculateWPM(input.length, startTime);
+        
+        // 添加练习记录
+        const practiceRecord: PracticeRecord = {
+          spell: currentSpell.latin,
+          accuracy,
+          wpm,
+          date: new Date().toISOString(),
+        };
+        
+        addPractice(practiceRecord);
+        checkPracticeAchievements(userData, practiceRecord, unlockAchievement);
+        
+        // 检查是否完成当前年级
+        checkGradeCompletion();
+        
+        // 移动到下一个咒语
+        moveToNextSpell();
+      });
+    } else {
+      // 播放错误音效
+      playSpellSound('error');
+    }
+  }, [currentSpell, input, startTime, userData, unlockAchievement, checkGradeCompletion, moveToNextSpell]);
+
   // 修改按键处理逻辑
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
     const key = event.key;
@@ -695,7 +685,7 @@ const Practice: React.FC = () => {
         setActiveKey('');
         setCorrectKeys([]);
         setWrongKeys([]);
-        playSound(true);
+        playKeySound(true);
       }
       return;
     }
@@ -717,34 +707,28 @@ const Practice: React.FC = () => {
       // 检查字符是否匹配，忽大小写差异
       if (key.toLowerCase() === currentChar.toLowerCase()) {
         setCorrectKeys([key.toLowerCase()]);
-        playSound(false);
-        setInput(prev => prev + currentChar); // 使用目标字符，保持大小写一致
+        playKeySound(false);
+        const newInput = input + currentChar;
+        setInput(newInput);
+
+        // 只在这里检查咒语完成
+        if (newInput.length === currentSpell.latin.length) {
+          const accuracy = calculateAccuracy(newInput, currentSpell.latin);
+          console.log('Spell completion check:', {
+            input: newInput,
+            target: currentSpell.latin,
+            accuracy
+          });
+          handleSpellCompletion(currentSpell.spell, accuracy);
+        }
       } else {
         setWrongKeys([key.toLowerCase()]);
-        playSound(true);
+        playKeySound(true);
         setInput(prev => prev + key);
       }
 
       // 每次输入后更新统计数据
       updateStats();
-    }
-
-    // 检查是否完成当前咒语
-    if (input.length === currentSpell.latin.length - 1) {
-      const isCorrect = input + key === currentSpell.latin;
-      if (isCorrect) {
-        playSound(false);
-        // 短暂延迟后自动进入下一课
-        setTimeout(() => {
-          moveToNextSpell();
-        }, 500);
-      } else {
-        playSound(true);
-        // 短暂延迟后自动进入下一课
-        setTimeout(() => {
-          moveToNextSpell();
-        }, 500);
-      }
     }
   }, [
     showAchievement,
@@ -759,10 +743,11 @@ const Practice: React.FC = () => {
     moveToNextSpell,
     startTime,
     updateStats,
-    playSound,
+    playKeySound,
     setActiveKey,
     setCorrectKeys,
-    setWrongKeys
+    setWrongKeys,
+    handleSpellCompletion
   ]);
 
   useEffect(() => {
@@ -814,62 +799,71 @@ const Practice: React.FC = () => {
         lineHeight: '1.5',
         fontFamily: 'Monaco, Consolas, monospace',
         display: 'flex',
-        justifyContent: 'flex-start',
+        flexDirection: 'column',
         alignItems: 'center',
-        minHeight: '3rem',
+        minHeight: '6rem',
         width: '100%',
         maxWidth: '800px',
         margin: '0 auto',
         px: 4,
       }}>
-        {text.split('').map((char, index) => {
-          const isTyped = index < typedText.length;
-          const isCorrect = isTyped && typedText[index] === char;
-          const isWrong = isTyped && typedText[index] !== char;
-          
-          if (char === ' ') {
+        {/* 目标文本显示 */}
+        <Box sx={{
+          color: 'rgba(255, 255, 255, 0.5)',
+          mb: 2,
+          width: '100%',
+          textAlign: 'center',
+        }}>
+          {text}
+        </Box>
+
+        {/* 实际输入显示 */}
+        <Box sx={{
+          width: '100%',
+          textAlign: 'center',
+          position: 'relative',
+        }}>
+          {typedText.split('').map((char, index) => {
+            const isCorrect = char === text[index];
+            
             return (
               <Box
                 key={index}
+                component="span"
                 sx={{
+                  color: isCorrect ? '#4CAF50' : '#f44336',
                   display: 'inline-block',
-                  width: '1.5rem',
-                  margin: '0 0.25rem',
-                  verticalAlign: 'middle',
+                  position: 'relative',
                 }}
-              />
+              >
+                {char}
+              </Box>
             );
-          }
-          
-          return (
-            <Box
-              key={index}
-              component="span"
-              sx={{
-                color: isTyped ? 
-                  (isCorrect ? '#4CAF50' : '#f44336') : 
-                  'rgba(255, 255, 255, 0.7)',
-                display: 'inline-block',
-                position: 'relative',
-                '&::after': !isTyped && index === typedText.length ? {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-4px',
-                  left: '0',
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: 'rgba(255, 215, 0, 0.8)',
-                  animation: 'blink 1s infinite',
-                } : {},
-              }}
-            >
-              {char}
-            </Box>
-          );
-        })}
+          })}
+          {/* 光标 */}
+          <Box
+            component="span"
+            sx={{
+              display: 'inline-block',
+              width: '2px',
+              height: '2.5rem',
+              backgroundColor: 'rgba(255, 215, 0, 0.8)',
+              verticalAlign: 'middle',
+              animation: 'blink 1s infinite',
+              ml: 1,
+            }}
+          />
+        </Box>
       </Box>
     );
   };
+
+  useEffect(() => {
+    // 设置开始时间
+    if (input.length === 1 && !startTime) {
+      setStartTime(Date.now());
+    }
+  }, [input, startTime]);
 
   return (
     <Box sx={{
@@ -1008,126 +1002,76 @@ const Practice: React.FC = () => {
         </List>
       </Paper>
 
-      {/* 练习区域 */}
-      <Box sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
-        {/* 练习内容和键盘区域 */}
-        <Box sx={{
-          flex: 1,
+      {/* 主要内容区域 */}
+      <Box sx={{ flex: 1, p: 3, position: 'relative', zIndex: 1 }}>
+        {/* 统计数据显示 */}
+        <Paper sx={{
+          backgroundColor: 'rgba(20, 20, 28, 0.4)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          p: 2,
+          mb: 3,
           display: 'flex',
-          flexDirection: 'column',
-          gap: 3,
+          justifyContent: 'space-around',
+          alignItems: 'center',
         }}>
-          {/* 练习内容 */}
-          <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              backgroundColor: 'rgba(20, 20, 28, 0.7)', // 增加背景不透明度
-              backdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              mb: 2
-            }}>
-              <img 
-                src={`/assets/images/icons/${
-                  currentGrade.grade.includes('新手入门') ? 'wand-basic.png' :
-                  currentGrade.grade.includes('一年级') ? 'golden-snitch.png' :
-                  currentGrade.grade.includes('二年级') ? 'basilisk.png' :
-                  currentGrade.grade.includes('三年级') ? 'time-turner.png' :
-                  currentGrade.grade.includes('四年级') ? 'goblet.png' :
-                  currentGrade.grade.includes('五年级') ? 'phoenix.png' :
-                  currentGrade.grade.includes('六年级') ? 'potions-book.png' :
-                  'deathly-hallows.png'
-                }`}
-                alt={currentSpell.spell}
-                style={{ width: 48, height: 48 }}
-                onError={(e) => {
-                  console.warn('图标加载失败');
-                  e.currentTarget.src = '/assets/images/icons/wand-basic.png';
-                }}
-              />
-              <Typography variant="h5" sx={{ color: '#ffd700' }}>
-                {currentSpell.spell}
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ color: '#ccc', mb: 3 }}>
-              {currentSpell.description}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" sx={{ color: 'rgba(255, 215, 0, 0.9)' }}>
+              速度
             </Typography>
-            <Box sx={{ 
-              textAlign: 'center',
-              mb: 4,
-              position: 'relative',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: -20,
-                left: -20,
-                right: -20,
-                bottom: -20,
-                background: 'radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0) 70%)',
-                pointerEvents: 'none',
-              }
-            }}>
-              {renderText(currentSpell.latin, input)}
-            </Box>
-            <LinearProgress 
-              variant="determinate" 
-              value={progress} 
-              sx={{
-                mb: 2,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: '#ffd700'
-                }
-              }}
-            />
-            <Box sx={{ 
-              textAlign: 'center',
-              position: 'relative',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: -20,
-                left: -20,
-                right: -20,
-                bottom: -20,
-                background: 'radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0) 70%)',
-                pointerEvents: 'none',
-              }
-            }}>
-              {renderText(currentSpell.latin.slice(0, input.length), input)}
-            </Box>
-          </Paper>
-
-          {/* 虚拟键盘 */}
-          <Box sx={{
-            position: 'fixed',
-            bottom: 24,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 'auto',
-            maxWidth: '90%',
-          }}>
-            <VirtualKeyboard
-              activeKey={activeKey}
-              correctKeys={correctKeys}
-              wrongKeys={wrongKeys}
-            />
+            <Typography sx={{ color: 'white', fontSize: '1.5rem' }}>
+              {stats.currentSpeed} WPM
+            </Typography>
           </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" sx={{ color: 'rgba(255, 215, 0, 0.9)' }}>
+              准确率
+            </Typography>
+            <Typography sx={{ color: 'white', fontSize: '1.5rem' }}>
+              {stats.accuracy}%
+            </Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" sx={{ color: 'rgba(255, 215, 0, 0.9)' }}>
+              最高速度
+            </Typography>
+            <Typography sx={{ color: 'white', fontSize: '1.5rem' }}>
+              {stats.maxSpeed} WPM
+            </Typography>
+          </Box>
+        </Paper>
+
+        {/* 咒语显示和进度条 */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{ color: 'white', mb: 2 }}>
+            {currentSpell.spell}
+          </Typography>
+          <Typography variant="subtitle1" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 2 }}>
+            {currentSpell.description}
+          </Typography>
+          <LinearProgress 
+            variant="determinate" 
+            value={progress} 
+            sx={{
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              '& .MuiLinearProgress-bar': {
+                backgroundColor: 'rgba(255, 215, 0, 0.8)',
+              },
+            }}
+          />
         </Box>
+
+        {/* 打字区域 */}
+        {renderText(currentSpell.latin, input)}
+
+        {/* 虚拟键盘 */}
+        <VirtualKeyboard
+          activeKey={activeKey}
+          correctKeys={correctKeys}
+          wrongKeys={wrongKeys}
+        />
       </Box>
 
       {/* 成就对话框 */}
